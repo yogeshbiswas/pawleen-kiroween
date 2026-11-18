@@ -1,0 +1,15 @@
+# Secrets - never upload
+.env
+.env.*
+
+# Python
+__pycache__/
+venv/
+.venv/
+
+# Node
+node_modules/
+
+# System files
+.DS_Store
+Thumbs.db
