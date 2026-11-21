@@ -120,8 +120,8 @@ Conventions for every task:
     - File `tests/test_prop_15_judge_lockout.py`. `pytest` passes.
     - **Validates: Requirements 11.10**
 
-- [ ] 4. Scenes and SSE events
-  - [ ] 4.1 Implement `app/scenes.py` with tests
+- [x] 4. Scenes and SSE events
+  - [x] 4.1 Implement `app/scenes.py` with tests
     - Add `KEYWORD_SCENES` (wizard, vampire, pumpkin, pirate, ghost), `GENERIC_SCENES` (at least 6), and `choose_scene(costume_text, previous, rng)`. Keep a small `last_scene` store per Browser_ID.
     - Write `tests/test_scenes.py`: each keyword maps to its scene (any case), generic text never repeats the previous scene, the list has at least 2 entries.
     - `pytest` passes.
@@ -132,7 +132,7 @@ Conventions for every task:
     - File `tests/test_prop_11_scenes.py`. Include the "regeneration reuses the same scene" check at the pipeline level once task 5.2 exists. `pytest` passes.
     - **Validates: Requirements 5.6, 5.7, 5.8**
 
-  - [ ] 4.3 Implement `app/events.py` with tests
+  - [x] 4.3 Implement `app/events.py` with tests
     - Add Pydantic event models `step`, `heartbeat`, `result`, `error` with `to_sse()` and `parse_sse()`, matching the design's schema (including `recast`, `attempt`, `max_attempts`, `notice`, `remaining`, `limit`, `show_chips`, `retry_after_seconds`).
     - Write `tests/test_events.py`: exact SSE framing (`event:` / `data:` / blank line), one example per event type, and a parse of a multi-event buffer.
     - `pytest` passes.

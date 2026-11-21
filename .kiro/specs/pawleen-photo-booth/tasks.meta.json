@@ -164,6 +164,37 @@
         "chatSessionId": "sess_f77c6e89-e0cb-4232-a702-0044929dcea2",
         "timestamp": 1795299512172
       }
+    ],
+    "4.1 Implement `app/scenes.py` with tests": [
+      {
+        "executionId": "3ebf605f-eba7-4925-a7c3-d04f109499ff",
+        "chatSessionId": "sess_41994ccc-f1f7-49a0-b0fe-5be094c94b61",
+        "timestamp": 1795299718725
+      },
+      {
+        "executionId": "3ebf605f-eba7-4925-a7c3-d04f109499ff",
+        "chatSessionId": "sess_41994ccc-f1f7-49a0-b0fe-5be094c94b61",
+        "timestamp": 1795299772564
+      }
+    ],
+    "4.3 Implement `app/events.py` with tests": [
+      {
+        "executionId": "3397c510-2c5c-487f-accd-6a36ec5e1906",
+        "chatSessionId": "sess_979f4c5b-f289-48cf-ac91-b5fc09623df4",
+        "timestamp": 1795299808017
+      },
+      {
+        "executionId": "3397c510-2c5c-487f-accd-6a36ec5e1906",
+        "chatSessionId": "sess_979f4c5b-f289-48cf-ac91-b5fc09623df4",
+        "timestamp": 1795299866875
+      }
+    ],
+    "4. Scenes and SSE events": [
+      {
+        "executionId": "3397c510-2c5c-487f-accd-6a36ec5e1906",
+        "chatSessionId": "sess_979f4c5b-f289-48cf-ac91-b5fc09623df4",
+        "timestamp": 1795299866954
+      }
     ]
   }
 }
