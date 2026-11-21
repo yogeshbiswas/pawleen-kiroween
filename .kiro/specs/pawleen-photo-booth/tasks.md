@@ -143,8 +143,8 @@ Conventions for every task:
     - File `tests/test_prop_18_sse_roundtrip.py`. `pytest` passes.
     - **Validates: Requirements 7.1, 7.2, 12.7**
 
-- [ ] 5. Fake agents and the pipeline orchestrator
-  - [ ] 5.1 Add data models, agent interfaces, and fake agents
+- [x] 5. Fake agents and the pipeline orchestrator
+  - [x] 5.1 Add data models, agent interfaces, and fake agents
     - Create `app/models.py` with `CostumeRequest` (with `costume_text` and a `__repr__` that prints sizes only), `PipelineState`, `PipelineOutcome` (`Success`, `Failure`), and `GatekeeperDecision` / `CheckResult` types. Create the agent classes' interfaces (`app/agents/*.py` stubs with the method signatures from the design that raise `NotImplementedError`; they are filled in by tasks 12.x).
     - In `tests/conftest.py` add scripted `FakeGatekeeper`, `FakeCostumeMaker`, `FakeQualityChecker` (outcomes: a value, an exception, or `"hang"`; they record `calls`), `test_settings()` with tiny timeouts, and tiny fake PNG/JPEG byte helpers. Add an autouse fixture that fails the test if `openai.AsyncOpenAI` is created.
     - For the dev-run fakes, also create `app/fakes.py` with ready-to-use fake agents (gatekeeper accepts, maker returns a generated placeholder PNG made with Pillow after a short delay, checker passes) used by `USE_FAKE_AGENTS=1` in task 6.1.
@@ -152,7 +152,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 3.4, 4.15, 4.16, 16.8_
 
-  - [ ] 5.2 Implement `app/pipeline.py` with tests
+  - [x] 5.2 Implement `app/pipeline.py` with tests
     - Implement `run_pipeline(req, agents, settings, emit, scene)` and `with_silent_retry`. Follow the design flow exactly: gatekeeper (30 s, one silent retry), maker (90 s, no retry on timeout), checker (30 s, one silent retry), at most one regeneration with the failure reasons and the same scene, best-of-two selection, `not_verified` and `wonky` notices, and `state.best_image` updated as soon as an image exists. Credits and safety errors are not retried.
     - Write `tests/test_pipeline.py` with the scripted fakes: all-pass; one failed check triggers exactly one regeneration with reasons in the prompt; second failure returns the better image with `wonky`; checker fails twice on image 1 gives `not_verified` and no regeneration; checker timeout then success is silent; checker fails twice on image 2 gives `not_verified`; gatekeeper reject skips maker and checker; gatekeeper hang is retried once then `gatekeeper_failed`; maker hang gives `maker_timeout` after exactly one maker call; a `step` event precedes each agent call; regeneration events carry `attempt=2, recast=true`.
     - `pytest` passes.

@@ -195,6 +195,37 @@
         "chatSessionId": "sess_979f4c5b-f289-48cf-ac91-b5fc09623df4",
         "timestamp": 1795299866954
       }
+    ],
+    "5.1 Add data models, agent interfaces, and fake agents": [
+      {
+        "executionId": "52fa582a-7d57-4075-ba43-82de461aaf19",
+        "chatSessionId": "sess_475bdc52-03a4-4459-8fb1-c5e88cf9678f",
+        "timestamp": 1795300069869
+      },
+      {
+        "executionId": "52fa582a-7d57-4075-ba43-82de461aaf19",
+        "chatSessionId": "sess_475bdc52-03a4-4459-8fb1-c5e88cf9678f",
+        "timestamp": 1795300146248
+      }
+    ],
+    "5.2 Implement `app/pipeline.py` with tests": [
+      {
+        "executionId": "324cce7d-05ec-4b2a-b36c-a138654b3f17",
+        "chatSessionId": "sess_db93b9bd-0f3a-4ae9-ac8e-ce0c01496cbc",
+        "timestamp": 1795300162038
+      },
+      {
+        "executionId": "324cce7d-05ec-4b2a-b36c-a138654b3f17",
+        "chatSessionId": "sess_db93b9bd-0f3a-4ae9-ac8e-ce0c01496cbc",
+        "timestamp": 1795300236914
+      }
+    ],
+    "5. Fake agents and the pipeline orchestrator": [
+      {
+        "executionId": "324cce7d-05ec-4b2a-b36c-a138654b3f17",
+        "chatSessionId": "sess_db93b9bd-0f3a-4ae9-ac8e-ce0c01496cbc",
+        "timestamp": 1795300237032
+      }
     ]
   }
 }
