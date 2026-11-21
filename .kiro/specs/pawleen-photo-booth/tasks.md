@@ -223,7 +223,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.8, 12.8_
 
-- [ ] 7. Checkpoint - Backend works with fake agents
+- [x] 7. Checkpoint - Backend works with fake agents
   - Run `pytest` and make sure it passes.
   - By hand: set `USE_FAKE_AGENTS=1`, `GLOBAL_DAILY_CAP=50`, and fake values for the other required variables, then run `python -m app.main`. Open `http://localhost:8000/health` and an unknown path to see the 404 page. From a terminal, send a `curl -N -F pet_photo=@some.jpg -F description="wizard hat" http://localhost:8000/api/summon` and check that `step`, `heartbeat` (if slow), and `result` events appear.
   - Ensure all tests pass, ask the user if questions arise.
