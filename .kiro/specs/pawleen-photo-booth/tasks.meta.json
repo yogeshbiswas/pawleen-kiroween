@@ -67,6 +67,35 @@
         "chatSessionId": "sess_ae5762f3-bc59-487e-a297-cee50dd00dcb",
         "timestamp": 1795298001216
       }
+    ],
+    "2.5 Implement `app/errors.py` with tests": [
+      {
+        "executionId": "8dc108e3-3369-42ed-ad43-2575045653e2",
+        "chatSessionId": "sess_ad224841-beb8-4e74-a70d-1c994c4f393f",
+        "timestamp": 1795298475606
+      },
+      {
+        "executionId": "8dc108e3-3369-42ed-ad43-2575045653e2",
+        "chatSessionId": "sess_ad224841-beb8-4e74-a70d-1c994c4f393f",
+        "timestamp": 1795298531826
+      },
+      {
+        "executionId": "63172327-cfd9-475e-bf36-1b681267199d",
+        "chatSessionId": "sess_ad224841-beb8-4e74-a70d-1c994c4f393f",
+        "timestamp": 1795298715950
+      },
+      {
+        "executionId": "63172327-cfd9-475e-bf36-1b681267199d",
+        "chatSessionId": "sess_ad224841-beb8-4e74-a70d-1c994c4f393f",
+        "timestamp": 1795298745889
+      }
+    ],
+    "2. Backend foundations: config, messages, errors": [
+      {
+        "executionId": "8dc108e3-3369-42ed-ad43-2575045653e2",
+        "chatSessionId": "sess_ad224841-beb8-4e74-a70d-1c994c4f393f",
+        "timestamp": 1795298531944
+      }
     ]
   }
 }

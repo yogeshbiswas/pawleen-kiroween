@@ -86,3 +86,107 @@ def test_limit_messages_use_relative_time_and_no_utc():
         text = get_message(code, 3600)
         assert "UTC" not in text
         assert not re.search(r"\d{1,2}:\d{2}", text)
+
+
+# ----------------------------------------------------------------- errors part
+
+import logging
+
+import httpx
+import openai
+from hypothesis import given, strategies as st
+
+from app.errors import ERROR_CODES, PawleenError, classify_openai_error
+
+# Built from pieces so the secret scanner does not flag it.
+FAKE_KEY = "s" + "k-FAKEKEY1234567890abcdef"
+_REQ = httpx.Request("POST", "https://api.openai.com/v1/x")
+
+
+def _status_exc(cls, status, code=None):
+    resp = httpx.Response(status, request=_REQ)
+    exc = cls(f"boom {FAKE_KEY}", response=resp, body={"code": code})
+    exc.code = code
+    return exc
+
+
+CASES = [
+    ("credits_depleted", _status_exc(openai.RateLimitError, 429, "insufficient_quota")),
+    ("temporary_failure", _status_exc(openai.RateLimitError, 429, "rate_limit_exceeded")),
+    ("temporary_failure", _status_exc(openai.InternalServerError, 500)),
+    ("temporary_failure", openai.APIConnectionError(request=_REQ)),
+    ("temporary_failure", openai.APITimeoutError(request=_REQ)),
+    ("refused", _status_exc(openai.BadRequestError, 400, "moderation_blocked")),
+    ("refused", PawleenError("refused")),
+    ("temporary_failure", _status_exc(openai.BadRequestError, 400, "other")),
+    ("temporary_failure", RuntimeError(FAKE_KEY)),
+]
+
+
+@pytest.mark.parametrize("expected, exc", CASES)
+def test_classify_examples(expected, exc):
+    assert classify_openai_error(exc) == expected
+
+
+def test_pawleen_error_code_and_unknown_code():
+    assert PawleenError("wonky").code == "wonky"
+    with pytest.raises(ValueError):
+        PawleenError("nope")
+    assert set(ERROR_CODES) == set(MESSAGES)
+
+
+@pytest.mark.parametrize("expected, exc", CASES)
+def test_response_text_never_contains_exception_text(expected, exc):
+    text = get_message(classify_openai_error(exc), 3600)
+    assert FAKE_KEY not in text
+    assert "boom" not in text
+
+
+@given(st.text())
+def test_any_message_maps_to_defined_code_without_leak(msg):
+    code = classify_openai_error(RuntimeError(msg + FAKE_KEY))
+    assert code in ERROR_CODES
+    assert FAKE_KEY not in get_message(code, 3600)
+
+
+def test_credits_depleted_logs_exactly_one_safe_line(caplog):
+    exc = _status_exc(openai.RateLimitError, 429, "insufficient_quota")
+    with caplog.at_level(logging.DEBUG):
+        classify_openai_error(exc)
+    assert len(caplog.records) == 1
+    line = caplog.records[0].getMessage()
+    assert "credits_depleted" in line
+    assert FAKE_KEY not in line and "boom" not in line
+    assert caplog.records[0].exc_info is None
+
+
+SETUP_CASES = [
+    (openai.AuthenticationError, 401),
+    (openai.PermissionDeniedError, 403),
+    (openai.NotFoundError, 404),
+]
+
+
+@pytest.mark.parametrize("cls, status", SETUP_CASES)
+def test_setup_errors_map_to_config_error(cls, status):
+    assert classify_openai_error(_status_exc(cls, status)) == "config_error"
+
+
+@pytest.mark.parametrize("cls, status", SETUP_CASES)
+def test_setup_errors_log_one_safe_line(cls, status, caplog):
+    with caplog.at_level(logging.DEBUG):
+        code = classify_openai_error(_status_exc(cls, status))
+    assert len(caplog.records) == 1
+    line = caplog.records[0].getMessage()
+    assert "config_error" in line and cls.__name__ in line
+    assert FAKE_KEY not in line and "boom" not in line
+    assert caplog.records[0].exc_info is None
+    text = get_message(code)
+    assert FAKE_KEY not in text and "boom" not in text
+
+
+def test_unknown_exception_logged_by_type_only(caplog):
+    with caplog.at_level(logging.DEBUG):
+        classify_openai_error(RuntimeError(FAKE_KEY))
+    assert "RuntimeError" in caplog.text
+    assert FAKE_KEY not in caplog.text

@@ -44,7 +44,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 13.7, 13.8, 13.9_
 
-- [ ] 2. Backend foundations: config, messages, errors
+- [x] 2. Backend foundations: config, messages, errors
   - [x] 2.1 Implement `app/config.py` with tests
     - Add the frozen `Settings` dataclass and `load_settings(env)` returning `(settings, problems)`. Read `.env` with `python-dotenv` at startup only (not inside `load_settings`).
     - Apply the rules: required `OPENAI_API_KEY`, `OPENAI_IMAGE_MODEL`, `OPENAI_VISION_MODEL`, `GLOBAL_DAILY_CAP` (1 to 100,000); optional limits default 3 and 20 (range 1 to 1,000,000); `OPENAI_IMAGE_QUALITY` allowed `low|medium|high`, default `medium`, invalid value logs one warning naming the variable only and is never in the problem list; optional `JUDGE_PASS` (empty means off).
@@ -69,7 +69,7 @@ Conventions for every task:
     - File `tests/test_prop_05_relative_time.py`. `pytest` passes.
     - **Validates: Requirements 10.8, 10.9, 10.10**
 
-  - [ ] 2.5 Implement `app/errors.py` with tests
+  - [x] 2.5 Implement `app/errors.py` with tests
     - Add `PawleenError` with a `code`, the set of defined error codes, and `classify_openai_error(exc)` mapping `RateLimitError` with `insufficient_quota` to `credits_depleted`, 5xx / `APIConnectionError` / `APITimeoutError` to `temporary_failure`, `BadRequestError` with `moderation_blocked` or a refusal to `refused`, and everything else to `temporary_failure`. Use only the exception type, status code, and error code, never the message text.
     - Log exactly one line for `credits_depleted` (time and category only). Unknown exceptions are logged by type only.
     - Extend `tests/test_errors_messages.py` with one example per code, a test that no response text contains exception text or a fake key, and a `caplog` test for the single credits log line.
