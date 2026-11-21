@@ -3,6 +3,10 @@
     "3.2 Write property test for limits never exceeded": {
       "status": "passed",
       "lastRunTimestamp": 1795299322772
+    },
+    "6.6 Write property test for \"only returned images are counted\"": {
+      "status": "passed",
+      "lastRunTimestamp": 1795302511110
     }
   },
   "executionHistory": {
@@ -293,6 +297,18 @@
         "executionId": "a3952d32-f9f0-4714-9f72-50513b3dc997",
         "chatSessionId": "sess_5d3ce3eb-1054-4b21-a6b0-19506b650ad1",
         "timestamp": 1795302290912
+      }
+    ],
+    "6.6 Write property test for \"only returned images are counted\"": [
+      {
+        "executionId": "4ffef5e0-cdb5-4cb4-a7e2-7a4fcbb1386d",
+        "chatSessionId": "sess_513db2db-3384-4e87-b921-dff6089c9ce6",
+        "timestamp": 1795302448367
+      },
+      {
+        "executionId": "4ffef5e0-cdb5-4cb4-a7e2-7a4fcbb1386d",
+        "chatSessionId": "sess_513db2db-3384-4e87-b921-dff6089c9ce6",
+        "timestamp": 1795302550637
       }
     ]
   }

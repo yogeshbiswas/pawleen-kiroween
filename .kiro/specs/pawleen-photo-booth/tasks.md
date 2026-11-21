@@ -212,7 +212,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.7, 3.8, 3.9, 4.12, 4.14, 6.13, 7.1, 7.2, 10.6, 10.7, 10.11, 10.17, 11.7, 12.5, 13.11_
 
-  - [ ]* 6.6 Write property test for "only returned images are counted"
+  - [x] 6.6 Write property test for "only returned images are counted"
     - **Property 2: Only returned images are counted**
     - File `tests/test_prop_02_counting.py` (random scripts for the three fakes run through the route accounting). `pytest` passes.
     - **Validates: Requirements 3.8, 3.9, 4.12, 4.14, 6.13, 10.17, 12.5**
