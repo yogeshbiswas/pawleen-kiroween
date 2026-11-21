@@ -12,6 +12,18 @@
         "chatSessionId": "sess_471aa0e5-6a60-4e4f-bc9f-df8f8989ae4c",
         "timestamp": 1795296166186
       }
+    ],
+    "1.2 Verify OpenAI models, image sizes, and quality options, then update `.env.example`": [
+      {
+        "executionId": "831e2f16-c7a6-4d24-be5b-00c94093031a",
+        "chatSessionId": "sess_29ad3073-0563-440f-a57d-18eafb6a7cf1",
+        "timestamp": 1795296371137
+      },
+      {
+        "executionId": "831e2f16-c7a6-4d24-be5b-00c94093031a",
+        "chatSessionId": "sess_29ad3073-0563-440f-a57d-18eafb6a7cf1",
+        "timestamp": 1795296808380
+      }
     ]
   }
 }

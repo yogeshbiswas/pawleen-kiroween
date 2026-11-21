@@ -28,7 +28,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 13.7, 13.8, 14.7_
 
-  - [ ] 1.2 Verify OpenAI models, image sizes, and quality options, then update `.env.example`
+  - [x] 1.2 Verify OpenAI models, image sizes, and quality options, then update `.env.example`
     - Read the current OpenAI docs for: the image editing model and its `images.edit` parameters, supported portrait `size` values, supported `quality` values, a vision-capable model name, and the Responses API `parse` call shape for the pinned `openai` version.
     - Create `.env.example` with placeholders only: `OPENAI_API_KEY`, `OPENAI_IMAGE_MODEL`, `OPENAI_VISION_MODEL`, `OPENAI_IMAGE_QUALITY`, `JUDGE_PASS`, `VISITOR_DAILY_LIMIT`, `JUDGE_DAILY_LIMIT`, `GLOBAL_DAILY_CAP`, with a comment that model names are examples. Use the verified names.
     - Write `docs/openai-findings.md` with the date checked, links to the pages used, the chosen model names, the portrait `size` to use, the allowed quality values (and any difference from `low`/`medium`/`high`), and the SDK call shapes. State clearly how each finding settles the design's open point on model names, sizes, and quality.
