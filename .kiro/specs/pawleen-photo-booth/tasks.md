@@ -179,7 +179,7 @@ Conventions for every task:
     - **Validates: Requirements 4.9, 4.12**
 
 - [ ] 6. API routes and hosting
-  - [ ] 6.1 Implement `app/main.py` (app factory, health, static, 404, PORT) with tests
+  - [x] 6.1 Implement `app/main.py` (app factory, health, static, 404, PORT) with tests
     - Add `create_app(settings, agents=None)`: loads settings, sets `pipeline_enabled`, mounts `/static`, serves `/` from `static/index.html`, `/health` (`{"status":"ok"}`), and the 404 handler (HTML `static/404.html` with status 404 for non-`/api` paths, JSON 404 for `/api/...`; never `index.html`).
     - Add `python -m app.main`: reads `PORT` (default 8000; exit code 1 with an stderr message naming the value when not an integer from 1 to 65535) and runs uvicorn on `0.0.0.0` with one process.
     - Add the dev switch: `USE_FAKE_AGENTS=1` uses `app/fakes.py` agents and logs one warning that the fake mode is on. Add it, commented out, to `.env.example`. It must be off by default.

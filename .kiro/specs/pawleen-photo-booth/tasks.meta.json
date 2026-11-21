@@ -226,6 +226,28 @@
         "chatSessionId": "sess_db93b9bd-0f3a-4ae9-ac8e-ce0c01496cbc",
         "timestamp": 1795300237032
       }
+    ],
+    "6.1 Implement `app/main.py` (app factory, health, static, 404, PORT) with tests": [
+      {
+        "executionId": "57949e12-5b08-4b9b-bac0-9bc11fcca4fc",
+        "chatSessionId": "sess_4a20cbe8-f5cf-4755-bb49-14c3aa9969b4",
+        "timestamp": 1795300447575
+      },
+      {
+        "executionId": "57949e12-5b08-4b9b-bac0-9bc11fcca4fc",
+        "chatSessionId": "sess_4a20cbe8-f5cf-4755-bb49-14c3aa9969b4",
+        "timestamp": 1795300525377
+      },
+      {
+        "executionId": "b47f2b9f-19f5-4860-a409-61162a349510",
+        "chatSessionId": "sess_4a20cbe8-f5cf-4755-bb49-14c3aa9969b4",
+        "timestamp": 1795300644616
+      },
+      {
+        "executionId": "b47f2b9f-19f5-4860-a409-61162a349510",
+        "chatSessionId": "sess_4a20cbe8-f5cf-4755-bb49-14c3aa9969b4",
+        "timestamp": 1795300739859
+      }
     ]
   }
 }
