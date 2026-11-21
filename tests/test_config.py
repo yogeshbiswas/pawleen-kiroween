@@ -110,8 +110,8 @@ def test_quality_invalid_warns_once_without_value(q, caplog):
 
 
 def test_judge_pass_read():
-    s, _ = load_settings(valid_env(JUDGE_PASS="open-sesame"))
-    assert s.judge_pass == "open-sesame"
+    s, _ = load_settings(valid_env(JUDGE_PASS="open-sesame-1234567"))
+    assert s.judge_pass == "open-sesame-1234567"
 
 
 def test_problem_list_and_logs_hold_no_values(caplog):
@@ -119,24 +119,53 @@ def test_problem_list_and_logs_hold_no_values(caplog):
         GLOBAL_DAILY_CAP="9999999",
         VISITOR_DAILY_LIMIT="zzz-bad",
         OPENAI_IMAGE_QUALITY="ultra",
-        **{"JUDGE_" + "PASS": "hunter2"},
+        **{"JUDGE_" + "PASS": "hunter2-hunter2-hunter2"},
     )
     with caplog.at_level(logging.DEBUG):
         _, problems = load_settings(env)
     assert set(problems) == {"GLOBAL_DAILY_CAP", "VISITOR_DAILY_LIMIT"}
     joined = " ".join(problems) + caplog.text
-    for value in ("9999999", "zzz-bad", "ultra", "hunter2", SECRET):
+    for value in ("9999999", "zzz-bad", "ultra", "hunter2-hunter2-hunter2", SECRET):
         assert value not in joined
 
 
 def test_judge_pass_is_trimmed():
-    env = valid_env(**{"JUDGE_" + "PASS": "  open-sesame \n"})
+    env = valid_env(**{"JUDGE_" + "PASS": "  open-sesame-1234567 \n"})
     s, problems = load_settings(env)
     assert problems == []
-    assert s.judge_pass == "open-sesame"
+    assert s.judge_pass == "open-sesame-1234567"
 
 
 def test_whitespace_only_judge_pass_turns_judge_mode_off():
     s, problems = load_settings(valid_env(**{"JUDGE_" + "PASS": " \t\n "}))
     assert problems == []
     assert s.judge_pass == ""
+
+
+def test_short_judge_pass_turns_judge_mode_off_and_warns(caplog):
+    short = "a1b2c3d4e5f6g7h"  # 15 characters
+    assert len(short) == 15
+    with caplog.at_level(logging.DEBUG):
+        s, problems = load_settings(valid_env(**{"JUDGE_" + "PASS": short}))
+    assert s.judge_pass == ""
+    assert problems == []  # the rest of the app keeps running
+    assert "JUDGE_PASS" in caplog.text
+    assert short not in caplog.text
+
+
+def test_short_judge_pass_is_measured_after_trimming(caplog):
+    padded = "  a1b2c3d4e5f6g7h  \n"  # 15 characters plus whitespace
+    with caplog.at_level(logging.DEBUG):
+        s, _ = load_settings(valid_env(**{"JUDGE_" + "PASS": padded}))
+    assert s.judge_pass == ""
+    assert "a1b2c3d4e5f6g7h" not in caplog.text
+
+
+def test_sixteen_character_judge_pass_is_accepted(caplog):
+    ok = "a1b2c3d4e5f6g7h8"  # 16 characters
+    assert len(ok) == 16
+    with caplog.at_level(logging.DEBUG):
+        s, problems = load_settings(valid_env(**{"JUDGE_" + "PASS": ok}))
+    assert s.judge_pass == ok
+    assert problems == []
+    assert "JUDGE_PASS" not in caplog.text

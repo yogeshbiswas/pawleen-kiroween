@@ -100,7 +100,7 @@ def test_settings(**overrides) -> Settings:
         image_model="test-image-model",
         vision_model="test-vision-model",
         image_quality="medium",
-        judge_pass="judge-secret",
+        judge_pass="judge-test-pass-0123456789",
         visitor_daily_limit=3,
         judge_daily_limit=20,
         global_daily_cap=100,

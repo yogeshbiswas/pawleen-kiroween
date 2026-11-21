@@ -4,7 +4,7 @@ from app.config import Settings
 from app.judge import JudgeGuard
 from tests.conftest import FakeClock
 
-PASS = "s3cret-pass"
+PASS = "judge-test-pass-0123456789"
 
 
 def make_guard(judge_pass=PASS):

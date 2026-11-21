@@ -1,6 +1,7 @@
 # Secrets - never upload
 .env
 .env.*
+!.env.example
 
 # Python
 __pycache__/

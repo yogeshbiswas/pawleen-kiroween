@@ -199,7 +199,7 @@ Conventions for every task:
     - File `tests/test_prop_06_uploads.py`. `pytest` passes.
     - **Validates: Requirements 3.2, 3.3, 3.5**
 
-  - [ ] 6.4 Implement the usage and judge routes with tests
+  - [x] 6.4 Implement the usage and judge routes with tests
     - In `app/routes.py` add the `get_browser_id` dependency (cookie `browser_id`: HttpOnly, SameSite=Lax, Secure on HTTPS, 1 year, `secrets.token_urlsafe(16)`; fallback `anon:` + hash of first `X-Forwarded-For` entry and user agent), `GET /api/usage` (`remaining`, `limit`, `is_judge`, `reset_in_seconds`, using the `X-Judge-Pass` header with `is_valid` only), and `POST /api/judge` (`valid`, `remaining`, or 429 `judge_locked` with `retry_after_seconds`). Register the router in `create_app`.
     - Write `tests/test_routes_usage_judge.py`: cookie issued when missing, fallback id without cookie, usage numbers for visitor and judge, valid and invalid pass, 5 wrong then locked, the pass value never appears in any response or log, two browsers have separate judge counts.
     - `pytest` passes.

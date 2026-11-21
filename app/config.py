@@ -14,6 +14,7 @@ QUALITY_VALUES = ("low", "medium", "high")
 DEFAULT_QUALITY = "medium"
 DEFAULT_VISITOR_LIMIT = 3
 DEFAULT_JUDGE_LIMIT = 20
+MIN_JUDGE_PASS_LENGTH = 16
 
 
 @dataclass(frozen=True)
@@ -92,6 +93,14 @@ def load_settings(env: Mapping[str, str]) -> tuple[Settings, list[str]]:
     # Trim: a stray space/newline pasted into a host's env settings must not break the pass.
     # Empty after trimming means judge mode is off.
     judge_pass = (env.get("JUDGE_PASS") or "").strip()
+    # Cookies can be forged, so the per-browser lockout cannot stop a scripted guesser.
+    # A short pass is too easy to guess: turn judge mode off but keep the app running.
+    if judge_pass and len(judge_pass) < MIN_JUDGE_PASS_LENGTH:
+        logger.warning(
+            "JUDGE_PASS is shorter than %d characters, judge mode is off",
+            MIN_JUDGE_PASS_LENGTH,
+        )
+        judge_pass = ""
 
     visitor = limit("VISITOR_DAILY_LIMIT", DEFAULT_VISITOR_LIMIT, 1, 1_000_000)
     judge = limit("JUDGE_DAILY_LIMIT", DEFAULT_JUDGE_LIMIT, 1, 1_000_000)

@@ -277,7 +277,7 @@ def load_settings(env: Mapping[str, str]) -> tuple[Settings, list[str]]: ...
 | `OPENAI_IMAGE_MODEL` | required, non-empty (example in `.env.example`: `gpt-image-1`) |
 | `OPENAI_VISION_MODEL` | required, non-empty (example: `gpt-4o-mini`) |
 | `OPENAI_IMAGE_QUALITY` | optional; allowed `low`, `medium`, `high`; default `medium`. An invalid value logs one warning that names the variable (never the value) and uses `medium`. It is **not** added to the problem list, so the pipeline stays enabled (Req 13.12 to 13.14). |
-| `JUDGE_PASS` | optional; empty means judge mode off |
+| `JUDGE_PASS` | optional; empty means judge mode off. After trimming, a non-empty value shorter than 16 characters logs a warning that names `JUDGE_PASS` (never the value), turns judge mode off (`judge_pass = ""`), and is not added to the problem list, because cookies can be forged and the per-browser lockout alone cannot stop a scripted guesser. |
 | `VISITOR_DAILY_LIMIT` | optional, default 3, int 1..1,000,000 |
 | `JUDGE_DAILY_LIMIT` | optional, default 20, int 1..1,000,000 |
 | `GLOBAL_DAILY_CAP` | required, int 1..100,000 (the stricter rule from Req 10.2 applies) |

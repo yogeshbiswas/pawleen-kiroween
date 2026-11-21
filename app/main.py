@@ -13,6 +13,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config import Settings, load_dotenv_file, load_settings
+from app.judge import JudgeGuard
+from app.routes import router as api_router
+from app.usage import UsageTracker
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +59,10 @@ def create_app(settings: Settings | None = None, agents=None) -> FastAPI:
     app.state.config_problems = problems
     app.state.pipeline_enabled = not problems
     app.state.agents = agents
+    app.state.usage = UsageTracker(settings)
+    app.state.judge = JudgeGuard(settings)
+    app.state.issued_ids = {}
+    app.include_router(api_router)
 
     @app.get("/health")
     async def health():
