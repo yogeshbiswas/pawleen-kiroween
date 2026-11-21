@@ -82,7 +82,7 @@ Conventions for every task:
     - **Validates: Requirements 12.1, 12.2, 12.4, 12.7**
 
 - [ ] 3. Usage tracking and judge guard
-  - [ ] 3.1 Implement `app/usage.py` (`UsageTracker`) with tests
+  - [x] 3.1 Implement `app/usage.py` (`UsageTracker`) with tests
     - Implement `reserve`, `commit`, `release`, `remaining`, `seconds_until_reset` under one `asyncio.Lock`, with an injectable clock, UTC day rollover, separate judge counts, and global count for non-judges only.
     - Add `FakeClock` to `tests/conftest.py` if it is not there yet.
     - Write `tests/test_usage.py`: 3 successes then the 4th raises `LimitReached` with the reset seconds; global cap blocks visitors but not judges; release leaves counts unchanged; 10 concurrent `asyncio.gather` reserves with limit 3 accept exactly 3; day rollover resets all counts; fresh tracker means zero counts.

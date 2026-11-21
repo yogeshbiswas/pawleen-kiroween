@@ -96,6 +96,28 @@
         "chatSessionId": "sess_ad224841-beb8-4e74-a70d-1c994c4f393f",
         "timestamp": 1795298531944
       }
+    ],
+    "3.1 Implement `app/usage.py` (`UsageTracker`) with tests": [
+      {
+        "executionId": "62c278d6-0d73-41f2-90b2-0110f5b4f94d",
+        "chatSessionId": "sess_7c2f3c41-af5c-40d7-a231-7604d11615e7",
+        "timestamp": 1795298911421
+      },
+      {
+        "executionId": "62c278d6-0d73-41f2-90b2-0110f5b4f94d",
+        "chatSessionId": "sess_7c2f3c41-af5c-40d7-a231-7604d11615e7",
+        "timestamp": 1795298958842
+      },
+      {
+        "executionId": "e3d48032-a60d-46db-a434-894f6639127a",
+        "chatSessionId": "sess_7c2f3c41-af5c-40d7-a231-7604d11615e7",
+        "timestamp": 1795299102755
+      },
+      {
+        "executionId": "e3d48032-a60d-46db-a434-894f6639127a",
+        "chatSessionId": "sess_7c2f3c41-af5c-40d7-a231-7604d11615e7",
+        "timestamp": 1795299145113
+      }
     ]
   }
 }
