@@ -45,7 +45,7 @@ Conventions for every task:
     - _Requirements: 13.7, 13.8, 13.9_
 
 - [ ] 2. Backend foundations: config, messages, errors
-  - [ ] 2.1 Implement `app/config.py` with tests
+  - [x] 2.1 Implement `app/config.py` with tests
     - Add the frozen `Settings` dataclass and `load_settings(env)` returning `(settings, problems)`. Read `.env` with `python-dotenv` at startup only (not inside `load_settings`).
     - Apply the rules: required `OPENAI_API_KEY`, `OPENAI_IMAGE_MODEL`, `OPENAI_VISION_MODEL`, `GLOBAL_DAILY_CAP` (1 to 100,000); optional limits default 3 and 20 (range 1 to 1,000,000); `OPENAI_IMAGE_QUALITY` allowed `low|medium|high`, default `medium`, invalid value logs one warning naming the variable only and is never in the problem list; optional `JUDGE_PASS` (empty means off).
     - Write `tests/test_config.py`: defaults, missing variables, out-of-range and non-numeric limits, quality unset/valid/invalid (`ultra`, empty string), problem list holds names only, log text holds no values.
