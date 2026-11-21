@@ -24,6 +24,25 @@
         "chatSessionId": "sess_29ad3073-0563-440f-a57d-18eafb6a7cf1",
         "timestamp": 1795296808380
       }
+    ],
+    "1.3 Create the Kiro hook that blocks commits containing secrets": [
+      {
+        "executionId": "7856bcd5-eb79-48b0-aa96-435021b29140",
+        "chatSessionId": "sess_fd487fa9-d330-478a-a0cb-7c87051dfdc7",
+        "timestamp": 1795297037276
+      },
+      {
+        "executionId": "7856bcd5-eb79-48b0-aa96-435021b29140",
+        "chatSessionId": "sess_fd487fa9-d330-478a-a0cb-7c87051dfdc7",
+        "timestamp": 1795297077572
+      }
+    ],
+    "1. Project setup, OpenAI docs check, and secret-scanning hook": [
+      {
+        "executionId": "7856bcd5-eb79-48b0-aa96-435021b29140",
+        "chatSessionId": "sess_fd487fa9-d330-478a-a0cb-7c87051dfdc7",
+        "timestamp": 1795297077665
+      }
     ]
   }
 }

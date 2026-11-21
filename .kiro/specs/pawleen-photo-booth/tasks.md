@@ -20,7 +20,7 @@ Conventions for every task:
 
 ## Tasks
 
-- [ ] 1. Project setup, OpenAI docs check, and secret-scanning hook
+- [x] 1. Project setup, OpenAI docs check, and secret-scanning hook
   - [x] 1.1 Scaffold the project
     - Create `requirements.txt` (fastapi, uvicorn, python-multipart, openai, pydantic, python-dotenv, pillow) and `requirements-dev.txt` (`-r requirements.txt`, pytest, pytest-asyncio, hypothesis, httpx, pytailwindcss). Pin exact versions confirmed with `pip index versions`.
     - Create the `app/`, `app/agents/`, `static/`, `tests/` folders with empty `__init__.py` where needed, `pytest.ini` (asyncio mode auto, `-q`), and a minimal `tests/conftest.py`.
@@ -36,7 +36,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 13.2, 13.3, 13.9, 13.12_
 
-  - [ ] 1.3 Create the Kiro hook that blocks commits containing secrets
+  - [x] 1.3 Create the Kiro hook that blocks commits containing secrets
     - Write `scripts/check_secrets.py`: scans the staged files (`git diff --cached --name-only`, then the staged content) and exits with code 1 and a message (file name and line number only, never the secret value) when it finds an `sk-` style OpenAI key pattern, a `JUDGE_PASS=` line with a real-looking value (anything other than empty or the placeholder `change-me-or-leave-empty`), or a staged file named `.env` (but `.env.example` is allowed). It also accepts file paths as arguments for testing.
     - Create the Kiro hook with the `createHook` mechanism so it lands in `.kiro/hooks/`: a `PreToolUse` command hook named "Block secrets in commits". It matches the shell tool name, receives the tool call as JSON on stdin, and runs only when the command contains `git commit`. It calls `scripts/check_secrets.py` and exits with code 2 to block the commit, with the script's message on stderr. A PreToolUse hook is the most practical choice because it needs no git setup and it stops the agent before the commit runs.
     - Optional and only if you also commit from a terminal outside Kiro: add a three-line `.git/hooks/pre-commit` example to the README (task 16.2) that runs the same script. Do not add it as a separate hook file here.
