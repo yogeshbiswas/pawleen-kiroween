@@ -21,7 +21,7 @@ Conventions for every task:
 ## Tasks
 
 - [ ] 1. Project setup, OpenAI docs check, and secret-scanning hook
-  - [ ] 1.1 Scaffold the project
+  - [x] 1.1 Scaffold the project
     - Create `requirements.txt` (fastapi, uvicorn, python-multipart, openai, pydantic, python-dotenv, pillow) and `requirements-dev.txt` (`-r requirements.txt`, pytest, pytest-asyncio, hypothesis, httpx, pytailwindcss). Pin exact versions confirmed with `pip index versions`.
     - Create the `app/`, `app/agents/`, `static/`, `tests/` folders with empty `__init__.py` where needed, `pytest.ini` (asyncio mode auto, `-q`), and a minimal `tests/conftest.py`.
     - Confirm `.gitignore` lists `.env`, `__pycache__/`, `.pytest_cache/`, `.hypothesis/`, and virtual environment folders. Add one smoke test `tests/test_smoke.py` that imports `app`.
