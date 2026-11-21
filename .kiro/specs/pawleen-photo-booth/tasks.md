@@ -89,7 +89,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 10.1, 10.2, 10.6, 10.7, 10.11, 10.12, 10.13, 10.14, 10.15, 10.16, 10.17, 11.7, 11.8_
 
-  - [ ]* 3.2 Write property test for limits never exceeded
+  - [x] 3.2 Write property test for limits never exceeded
     - **Property 1: Limits are never exceeded**
     - File `tests/test_prop_01_limits.py` (include a stateful `RuleBasedStateMachine` variant). `pytest` passes.
     - **Validates: Requirements 10.1, 10.2, 10.6, 10.7, 10.16**
