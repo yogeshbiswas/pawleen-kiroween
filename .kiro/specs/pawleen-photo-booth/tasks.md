@@ -205,7 +205,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 10.3, 10.4, 10.5, 10.13, 11.3, 11.6, 11.7, 11.10, 11.15_
 
-  - [ ] 6.5 Implement `POST /api/summon` (SSE stream and accounting) with tests
+  - [x] 6.5 Implement `POST /api/summon` (SSE stream and accounting) with tests
     - In `app/routes.py` add the summon route: check config, validate files (close both uploads in `finally`), `reserve()`, then stream SSE with the required headers (`text/event-stream`, `no-cache, no-transform`, `X-Accel-Buffering: no`, `keep-alive`). Run the pipeline as a task wrapped in `asyncio.timeout(settings.pipeline_timeout)`, feed events through an `asyncio.Queue`, send a `heartbeat` on each queue wait timeout, end with exactly one `result` or `error`. Commit on `result`; release in `finally` on every other path (error, timeout, disconnect, cancel). On timeout with an image, return it with `not_verified` and commit. Pick the scene with `choose_scene`. Put `remaining` and `limit` in the `result` event after the commit.
     - Return the pre-stream JSON errors (`bad_upload` 400, `visitor_limit` / `global_cap` 429 with `retry_after_seconds`, `config_error` 503) in the order: config, files, reserve.
     - Write `tests/test_routes_summon.py` with fake agents: success stream shape and counts, 4th request returns 429, global cap, judge pass raises the limit, every error code leaves counts unchanged, total timeout without image returns `pipeline_timeout` and count 0, total timeout after image 1 returns it as `not_verified` and count 1, heartbeat appears while a fake agent sleeps past the interval, exactly one terminal event, no-buffering headers, cancelling the stream releases the reservation, config error keeps `/health` working.

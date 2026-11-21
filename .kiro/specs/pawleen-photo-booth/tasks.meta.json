@@ -282,6 +282,18 @@
         "chatSessionId": "sess_f9c46655-f4f7-45ec-85c7-6df6725a1c7d",
         "timestamp": 1795301286589
       }
+    ],
+    "6.5 Implement `POST /api/summon` (SSE stream and accounting) with tests": [
+      {
+        "executionId": "a3952d32-f9f0-4714-9f72-50513b3dc997",
+        "chatSessionId": "sess_5d3ce3eb-1054-4b21-a6b0-19506b650ad1",
+        "timestamp": 1795302146201
+      },
+      {
+        "executionId": "a3952d32-f9f0-4714-9f72-50513b3dc997",
+        "chatSessionId": "sess_5d3ce3eb-1054-4b21-a6b0-19506b650ad1",
+        "timestamp": 1795302290912
+      }
     ]
   }
 }
