@@ -89,7 +89,9 @@ def load_settings(env: Mapping[str, str]) -> tuple[Settings, list[str]]:
             quality = DEFAULT_QUALITY
             logger.warning("OPENAI_IMAGE_QUALITY is invalid, using %s", DEFAULT_QUALITY)
 
-    judge_pass = env.get("JUDGE_PASS") or ""
+    # Trim: a stray space/newline pasted into a host's env settings must not break the pass.
+    # Empty after trimming means judge mode is off.
+    judge_pass = (env.get("JUDGE_PASS") or "").strip()
 
     visitor = limit("VISITOR_DAILY_LIMIT", DEFAULT_VISITOR_LIMIT, 1, 1_000_000)
     judge = limit("JUDGE_DAILY_LIMIT", DEFAULT_JUDGE_LIMIT, 1, 1_000_000)

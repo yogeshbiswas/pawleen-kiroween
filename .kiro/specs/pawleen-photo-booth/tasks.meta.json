@@ -135,6 +135,35 @@
         "chatSessionId": "sess_636fc468-ec53-463d-91a4-a81e0b44a356",
         "timestamp": 1795299329463
       }
+    ],
+    "3.5 Implement `app/judge.py` (`JudgeGuard`) with tests": [
+      {
+        "executionId": "29d4ee0f-2345-41f2-a5b1-7024633d9726",
+        "chatSessionId": "sess_f77c6e89-e0cb-4232-a702-0044929dcea2",
+        "timestamp": 1795299472956
+      },
+      {
+        "executionId": "29d4ee0f-2345-41f2-a5b1-7024633d9726",
+        "chatSessionId": "sess_f77c6e89-e0cb-4232-a702-0044929dcea2",
+        "timestamp": 1795299512064
+      },
+      {
+        "executionId": "06879a51-10f7-42fd-9113-dc22808b9f99",
+        "chatSessionId": "sess_f77c6e89-e0cb-4232-a702-0044929dcea2",
+        "timestamp": 1795299559341
+      },
+      {
+        "executionId": "06879a51-10f7-42fd-9113-dc22808b9f99",
+        "chatSessionId": "sess_f77c6e89-e0cb-4232-a702-0044929dcea2",
+        "timestamp": 1795299591723
+      }
+    ],
+    "3. Usage tracking and judge guard": [
+      {
+        "executionId": "29d4ee0f-2345-41f2-a5b1-7024633d9726",
+        "chatSessionId": "sess_f77c6e89-e0cb-4232-a702-0044929dcea2",
+        "timestamp": 1795299512172
+      }
     ]
   }
 }

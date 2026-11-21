@@ -81,7 +81,7 @@ Conventions for every task:
     - File `tests/test_prop_17_error_mapping.py`. `pytest` passes.
     - **Validates: Requirements 12.1, 12.2, 12.4, 12.7**
 
-- [ ] 3. Usage tracking and judge guard
+- [x] 3. Usage tracking and judge guard
   - [x] 3.1 Implement `app/usage.py` (`UsageTracker`) with tests
     - Implement `reserve`, `commit`, `release`, `remaining`, `seconds_until_reset` under one `asyncio.Lock`, with an injectable clock, UTC day rollover, separate judge counts, and global count for non-judges only.
     - Add `FakeClock` to `tests/conftest.py` if it is not there yet.
@@ -104,7 +104,7 @@ Conventions for every task:
     - File `tests/test_prop_04_reset.py`. `pytest` passes.
     - **Validates: Requirements 10.12, 10.13**
 
-  - [ ] 3.5 Implement `app/judge.py` (`JudgeGuard`) with tests
+  - [x] 3.5 Implement `app/judge.py` (`JudgeGuard`) with tests
     - Implement `is_valid` (constant-time `hmac.compare_digest`; empty configured pass, empty presented value, or value longer than 128 characters is invalid) and `verify` with the 5-wrong-attempts, 1-hour lockout per Browser_ID using the injectable clock. A locked browser is refused even with the right pass. The pass value is never logged or returned.
     - Write `tests/test_judge.py`: correct pass, wrong pass, empty configured pass rejects everything, 5 wrong attempts lock, 6th attempt (even correct) returns locked with `retry_after_seconds`, lock expires after 1 hour, two browsers locked separately, `caplog` has no pass value.
     - `pytest` passes.

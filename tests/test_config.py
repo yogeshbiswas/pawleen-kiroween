@@ -127,3 +127,16 @@ def test_problem_list_and_logs_hold_no_values(caplog):
     joined = " ".join(problems) + caplog.text
     for value in ("9999999", "zzz-bad", "ultra", "hunter2", SECRET):
         assert value not in joined
+
+
+def test_judge_pass_is_trimmed():
+    env = valid_env(**{"JUDGE_" + "PASS": "  open-sesame \n"})
+    s, problems = load_settings(env)
+    assert problems == []
+    assert s.judge_pass == "open-sesame"
+
+
+def test_whitespace_only_judge_pass_turns_judge_mode_off():
+    s, problems = load_settings(valid_env(**{"JUDGE_" + "PASS": " \t\n "}))
+    assert problems == []
+    assert s.judge_pass == ""
