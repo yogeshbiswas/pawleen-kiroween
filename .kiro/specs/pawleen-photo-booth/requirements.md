@@ -44,6 +44,7 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 - **Result_View**: The Frontend view that shows the Costumed_Image, the Before_After_View, and the result actions.
 - **Before_After_View**: A Result_View display that shows the original Pet_Photo next to the Costumed_Image.
 - **Haunted_Gallery**: The Frontend view listing the Visitor's saved Costumed_Images.
+- **Costume_Name**: A short label of at most 40 characters, such as "Witch costume", that the Gatekeeper_Agent returns for a Costume_Photo when no Costume_Description is given.
 - **Browser_Storage**: IndexedDB in the Visitor's own browser, used to store Haunted_Gallery contents.
 - **Preference_Storage**: Small flag storage in the Visitor's own browser (such as localStorage), used only for the Privacy_Banner dismissal and the Sound_Toggle setting, never for images.
 - **Session_Storage**: Browser storage that is cleared when the browser session ends.
@@ -137,6 +138,8 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 12. IF the Gatekeeper_Agent rejects a Costume_Request, THEN THE Backend SHALL NOT count the request against the Visitor_Daily_Limit, the Judge_Daily_Limit, or the Global_Daily_Cap.
 13. IF a Gatekeeper_Agent attempt returns an error or does not return a decision within 30 seconds, THEN THE Backend SHALL perform one Silent_Retry.
 14. IF the Silent_Retry of the Gatekeeper_Agent also returns an error or does not return a decision within 30 seconds, THEN THE Backend SHALL skip the Costume_Maker_Agent and Quality_Checker_Agent, SHALL NOT count the request against any limit, and THE Frontend SHALL display the Spooky_Message "👻 The Gatekeeper dozed off and couldn't check your pet. Your try wasn't used, so please try again!"
+15. WHEN the Gatekeeper_Agent accepts a Costume_Request that has a Costume_Photo and no Costume_Description, THE Gatekeeper_Agent SHALL return a Costume_Name of at most 40 characters that describes the costume in the Costume_Photo.
+16. WHEN a Costume_Description is provided, THE Gatekeeper_Agent SHALL return no Costume_Name, and THE Frontend SHALL use the Costume_Description as the costume name.
 
 ### Requirement 5: Costume Maker Agent
 
@@ -221,8 +224,8 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 
 #### Acceptance Criteria
 
-1. WHEN the Agent_Pipeline returns a Costumed_Image, THE Frontend SHALL save the Costumed_Image to Browser_Storage (IndexedDB) within 2 seconds of receiving it, together with the costume name and the save date.
-2. THE Haunted_Gallery SHALL display all Costumed_Images saved in Browser_Storage as thumbnails, ordered from newest to oldest by save time, and SHALL label each item with its costume name and date.
+1. WHEN the Agent_Pipeline returns a Costumed_Image, THE Frontend SHALL save the Costumed_Image to Browser_Storage (IndexedDB) within 2 seconds of receiving it, together with the costume name and the save date, where the costume name is the typed Costume_Description when one was given, otherwise the Costume_Name returned by the Gatekeeper_Agent, and otherwise the fallback label "Mystery costume" when the Gatekeeper_Agent returns no Costume_Name or an empty or whitespace-only Costume_Name.
+2. THE Haunted_Gallery SHALL display all Costumed_Images saved in Browser_Storage as thumbnails, ordered from newest to oldest by save time, and SHALL label each item with its saved costume name and date.
 3. THE Haunted_Gallery SHALL display the hint "🦇 Your gallery lives in this browser. Download your favourites to keep them forever!"
 4. WHEN the Visitor selects an item in the Haunted_Gallery, THE Frontend SHALL display that Costumed_Image at its original pixel dimensions, scaled down only if needed to fit the viewport, with a download button, a share button, and a delete button, within 1 second of the selection.
 5. WHEN the Visitor activates the download button, THE Frontend SHALL download the selected Costumed_Image as an image file at its original resolution.
@@ -313,9 +316,12 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 6. IF Visitor_Daily_Limit, Judge_Daily_Limit, or Global_Daily_Cap is set but is not a whole number between 1 and 1,000,000, THEN THE Backend SHALL log the names of the invalid variables, refuse to run the Agent_Pipeline, and keep running other Backend functions.
 7. THE Pawleen_App SHALL keep the OpenAI API key and Judge_Pass out of source code, Frontend assets, and version control.
 8. THE Pawleen_App repository SHALL list the `.env` file in `.gitignore`.
-9. THE Pawleen_App repository SHALL include a `.env.example` file that lists every variable name with a placeholder value and contains no real secret value.
+9. THE Pawleen_App repository SHALL include a `.env.example` file that lists every variable name with a placeholder value and contains no real secret value, and model names appear there only as example values.
 10. IF the OpenAI API key, the image editing model name, the vision-capable model name, or the Global_Daily_Cap is missing or is an empty string at startup, THEN THE Backend SHALL log the names of the missing variables, refuse to run the Agent_Pipeline, and keep running other Backend functions.
 11. IF the Backend refuses to run the Agent_Pipeline because of an Environment_Config error, THEN THE Backend SHALL omit the values of all Environment_Config variables from its log output and return an error response to any request that would start the Agent_Pipeline, AND THE Frontend SHALL display the Spooky_Message "🕸️ The photo booth isn't open yet. The spirits are still setting up!"
+12. WHEN the Backend starts, THE Backend SHALL read the image quality setting OPENAI_IMAGE_QUALITY from the Environment_Config, where the allowed values are low, medium, and high, and the default value is medium when the variable is not set.
+13. THE Costume_Maker_Agent SHALL pass the OPENAI_IMAGE_QUALITY value to every image editing call.
+14. IF OPENAI_IMAGE_QUALITY is set to a value other than low, medium, or high, THEN THE Backend SHALL log a warning that names the OPENAI_IMAGE_QUALITY variable without its value and SHALL use the value medium.
 
 ### Requirement 14: Hosting and Delivery
 
@@ -331,6 +337,8 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 6. IF the PORT environment variable is set to a value that is not an integer from 1 to 65535, THEN THE Backend SHALL exit with a non-zero exit code and write an error message to standard error that names the invalid PORT value.
 7. THE Pawleen_App repository SHALL include a Python dependency manifest (`requirements.txt`) that lists every third-party package the Backend imports with an exact pinned version, and a single-line start command that launches the Backend with no manual steps after the dependencies are installed.
 8. WHEN a client sends a GET request to the health check endpoint, THE Backend SHALL respond within 500 milliseconds with a success response that indicates the service is running.
+9. THE Pawleen_App repository SHALL include a static CSS file, built once from the Frontend styles with the Tailwind standalone CLI (installed through the pytailwindcss Python package) and committed to the repository, so that the build requires no Node.js step and the Frontend loads no Tailwind script from a CDN at runtime.
+10. THE Pawleen_App repository README SHALL include a short note that describes how to rebuild the static CSS file.
 
 ### Requirement 15: Haunting, Responsive User Interface
 
@@ -342,7 +350,7 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 2. THE Frontend SHALL render a dark theme in which the page background has a relative luminance of at most 0.05 and purple and orange are the two accent colors used for primary buttons, headings, and links.
 3. THE Frontend SHALL display an animated fog effect in the page background that loops continuously and does not intercept pointer or keyboard input to the content above it.
 4. THE Frontend SHALL display every primary button with a visible glow effect (a colored shadow around the button) in its default, hover, and keyboard-focus states.
-5. THE Frontend SHALL render headings in a spooky display font and body text in a legible font, and SHALL fall back to a generic serif or sans-serif font if either font fails to load within 3 seconds.
+5. THE Frontend SHALL render headings in a spooky display font and body text in a legible font, SHALL self-host both fonts from the application's own static files with no requests to third-party font services, and SHALL fall back to a generic serif or sans-serif font if either font fails to load within 3 seconds.
 6. THE Frontend SHALL maintain a contrast ratio of at least 4.5:1 for body text, and at least 3:1 for large text (18 pt or larger, or 14 pt bold or larger) and for button borders and focus indicators, against their backgrounds.
 7. WHILE the viewport width is below 768 px, THE Frontend SHALL size every interactive control to at least 44 px by 44 px.
 8. WHERE the Visitor's system setting requests reduced motion, THE Frontend SHALL disable the fog animation, the floating bats and ghosts, the candle flicker, the fog-clearing reveal, and all other non-essential animations (any animation not required to convey state or progress), and SHALL render the fog as a static background and show the Costumed_Image immediately.
@@ -356,6 +364,7 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 16. THE Frontend SHALL use a ghost with a paw print as the Pawleen logo and as the browser tab icon.
 17. THE Frontend SHALL provide optional spooky sound effects that are off by default, and SHALL provide a Sound_Toggle, reachable from every screen, that turns the sound effects on or off.
 18. THE Frontend SHALL create the application background fresh with CSS or code and SHALL NOT load any external image for the background.
+19. THE Pawleen_App repository SHALL include the license file of each self-hosted font.
 
 ### Requirement 16: Privacy and Data Handling
 
@@ -365,9 +374,10 @@ Out of scope: user accounts, shopping cart, payments, and any database or server
 
 1. WHEN a Costume_Request completes successfully, THE Backend SHALL discard the uploaded images and all generated images from memory within 5 seconds of sending the response to the Visitor.
 2. IF a Costume_Request fails or is cancelled, THEN THE Backend SHALL discard the uploaded images and any generated images from memory within 5 seconds of the failure or cancellation.
-3. THE Backend SHALL NOT write uploaded images or generated images to disk, a database, or any persistent storage.
+3. THE Backend SHALL NOT write uploaded images or generated images to any persistent storage (disk, database, or other); temporary upload buffers created by the web framework SHALL be deleted immediately after the upload has been read.
 4. THE Backend SHALL transmit uploaded images to no external service other than the OpenAI API.
 5. WHEN the Visitor first loads the main page, THE Frontend SHALL display the Privacy_Banner stating that photos are processed by OpenAI, that photos are not stored on the servers, that the Haunted_Gallery is stored only in the Visitor's browser, and that an anonymous Browser_ID cookie is used to count daily spells.
 6. WHEN the Visitor dismisses the Privacy_Banner, THE Frontend SHALL hide the Privacy_Banner and record the dismissal in Preference_Storage, so that the Privacy_Banner is not shown again on later visits from the same browser.
 7. THE Frontend SHALL display on every screen a footer line with the text "🔒 Your photos are only used to create your costume (processed by OpenAI) and are never stored on our servers. Your gallery stays in your browser."
 8. THE Backend SHALL NOT include image content, including raw bytes and base64-encoded data, in application log entries at any log level.
+9. THE Frontend SHALL send requests only to the application's own origin and SHALL NOT send requests to any third-party host, so that OpenAI is called only by the Backend.
