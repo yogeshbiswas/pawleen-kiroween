@@ -57,7 +57,7 @@ Conventions for every task:
     - File `tests/test_prop_16_config.py`. `pytest` passes.
     - **Validates: Requirements 13.4, 13.5, 13.6, 13.10, 13.11, 13.12, 13.14**
 
-  - [ ] 2.3 Implement `app/messages.py` with tests
+  - [x] 2.3 Implement `app/messages.py` with tests
     - Add `format_relative(seconds)` (hours rounded up when at least 3600 seconds, otherwise minutes rounded up, minimum 1; "1 hour", "3 hours", "1 minute").
     - Add all backend Spooky_Messages keyed by error code (visitor limit, global cap, config error, no animal, bad costume, gatekeeper failed, credits depleted, temporary failure, refused, maker failed, maker timeout, pipeline timeout, judge locked, bad upload, wonky, not verified). Use the exact texts from the requirements, each at most 160 characters, each with a plain next step.
     - Write `tests/test_errors_messages.py` (messages part): exact text checks, length limit, relative time examples at 1 s, 59 min, 60 min, 61 min, 3 h, and no UTC wording.
