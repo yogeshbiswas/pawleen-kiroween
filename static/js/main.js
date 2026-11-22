@@ -25,6 +25,7 @@ export function showScreen(name) {
     section.hidden = section.dataset.screen !== name;
   }
   state.screen = name;
+  updateNavButton();
   window.scrollTo(0, 0);
 }
 
@@ -33,10 +34,19 @@ window.showScreen = showScreen;
 
 // The nav button flips between the booth and the gallery.
 const navButton = document.getElementById("nav-toggle");
+
+// Why one function: label and disabled state always follow state, even when
+// showScreen() or setBusy() is called from code instead of a click.
+function updateNavButton() {
+  if (!navButton) return;
+  navButton.textContent = state.screen === "gallery" ? "🎃 Booth" : "🖼️ Gallery";
+  // Why disabled while busy: leaving the progress screen mid-spell is confusing.
+  navButton.disabled = state.busy;
+}
+
 navButton?.addEventListener("click", () => {
-  const toGallery = state.screen !== "gallery";
-  showScreen(toGallery ? "gallery" : "booth");
-  navButton.textContent = toGallery ? "🎃 Booth" : "🖼️ Gallery";
+  if (state.busy) return;
+  showScreen(state.screen === "gallery" ? "booth" : "gallery");
 });
 
 // ---- Booth form (task 8.5) ----
@@ -69,6 +79,7 @@ export function updateSummonButton() {
 export function setBusy(busy) {
   state.busy = busy;
   updateSummonButton();
+  updateNavButton();
 }
 
 // Sets up one upload slot. `key` is the state field that holds the prepared image.
