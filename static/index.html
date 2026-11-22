@@ -103,6 +103,21 @@
         </button>
         <p id="summon-hint" class="-mt-4 text-sm text-witch-light">Add a pet photo and a costume photo or description to wake the button.</p>
       </form>
+
+      <!-- Judge pass: a separate form so Enter here never starts a summon. -->
+      <p id="usage-line" class="mt-6 text-center text-sm text-witch-light" aria-live="polite" hidden></p>
+      <form id="judge-form" class="mt-3 rounded-xl border border-witch/40 p-3" novalidate>
+        <label for="judge-input" class="block text-pumpkin">🗝️ Have a judge pass?</label>
+        <div class="mt-2 flex flex-col gap-2 min-[400px]:flex-row">
+          <input id="judge-input" type="password" minlength="1" maxlength="128" autocomplete="off"
+            class="min-h-11 w-full min-w-0 rounded-lg border border-witch bg-black/40 px-3 py-2">
+          <button type="submit" id="judge-submit"
+            class="min-h-11 rounded-lg border border-pumpkin px-4 text-pumpkin hover:bg-pumpkin/20 disabled:cursor-not-allowed disabled:opacity-50">
+            Open the crypt
+          </button>
+        </div>
+        <p id="judge-message" class="mt-2 break-words text-sm" role="status" aria-live="polite" hidden></p>
+      </form>
     </section>
 
     <section id="screen-progress" data-screen="progress" aria-labelledby="progress-title" hidden>

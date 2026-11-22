@@ -1,6 +1,35 @@
 // Frontend-only spooky messages. Each one keeps the tone and states the plain action.
 // Texts come from requirements 1.x and 2.x.
 
+// Same rule as app/messages.py format_relative: hours rounded up from 1 hour,
+// otherwise minutes rounded up (at least 1). Examples: 1 -> "1 minute",
+// 3540 -> "59 minutes", 3600 -> "1 hour", 3601 -> "2 hours". Never a clock time or UTC.
+export function formatRelative(seconds) {
+  const minutes = Math.max(1, Math.ceil(seconds / 60));
+  if (minutes >= 60) {
+    const hours = Math.ceil(seconds / 3600);
+    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+  }
+  return `${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
+}
+
+// Messages that need a number or a wait time (Req 10.8-10.10, 11.9-11.12).
+export const judgeText = {
+  welcome: (n) => `🔑 Welcome, honoured judge! The crypt is open, with ${n} spells for tonight.`,
+  invalid: "🗝️ That key doesn't fit this crypt... Please check your judge pass.",
+  sealed: (seconds) =>
+    `🔒 The crypt is sealed after too many wrong keys. Try your judge pass again in ${formatRelative(seconds)}.`,
+  failed: "🕸️ The spirits could not check your pass. Please try again.",
+};
+
+export function limitText(code, seconds) {
+  const when = formatRelative(seconds || 0);
+  if (code === "visitor_limit") return `🌙 The spirits need rest! Your spells return in ${when}.`;
+  if (code === "global_cap") return `🦇 The photo booth is closed for the night. It reopens in ${when}!`;
+  if (code === "judge_locked") return judgeText.sealed(seconds || 0);
+  return null;
+}
+
 export const MESSAGES = {
   // Req 1.8: wrong file type
   fileType: "The spirits can only read photos 📸 Please choose a JPG, PNG or WebP image.",

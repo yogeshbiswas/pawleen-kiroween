@@ -1,8 +1,8 @@
 // Entry point. Holds the shared state and the screen switcher.
 
 import { prepareImage, PrepError } from "/static/js/image-prep.js";
-import { MESSAGES } from "/static/js/messages.js";
-import { summon } from "/static/js/api.js";
+import { MESSAGES, judgeText, limitText } from "/static/js/messages.js";
+import { summon, getUsage, checkJudge } from "/static/js/api.js";
 import { costumeNameFor, saveSpell, listSpells, deleteSpell, clearAll } from "/static/js/gallery.js";
 
 export const SCREENS = ["booth", "progress", "result", "gallery", "error"];
@@ -209,7 +209,16 @@ const STEP_TEXT = {
 const ROTATE_MS = 4000; // Req 7.7
 const READY_PAUSE_MS = 900; // short pause so the visitor sees the 100 % bar
 
-state.judgePass = null; // set by the judge task; sent only as a header
+// Why try/catch: sessionStorage can throw when the browser blocks storage.
+function readStoredPass() {
+  try {
+    return sessionStorage.getItem(JUDGE_KEY) || null;
+  } catch {
+    return null;
+  }
+}
+const JUDGE_KEY = "pawleenJudgePass";
+state.judgePass = readStoredPass(); // sent only as the X-Judge-Pass header
 state.result = null; // the last result event, shown by the result screen (task 8.7)
 
 let summonAbort = null; // lets the back button stop a running request
@@ -343,7 +352,9 @@ async function startSummon() {
       }, READY_PAUSE_MS);
     } else if (type === "error") {
       finished = true;
-      showFailure(data.message, Boolean(data.show_chips));
+      // Limit messages are built here from retry_after_seconds, so the time is always relative.
+      const text = limitText(data.code, data.retry_after_seconds) || data.message;
+      showFailure(text, Boolean(data.show_chips));
     }
     // "heartbeat" needs no UI; api.js already reset the watchdog.
   };
@@ -656,8 +667,74 @@ $("gallery-clear").addEventListener("click", async () => {
   $("gallery-title").focus();
 });
 
+// ---- Judge pass and usage (task 10.2) ----
+
+const judgeForm = $("judge-form");
+const judgeInput = $("judge-input");
+const judgeMessage = $("judge-message");
+const judgeSubmit = $("judge-submit");
+
+async function refreshUsage() {
+  const usage = await getUsage(state.judgePass);
+  const line = $("usage-line");
+  if (!usage) {
+    line.hidden = true; // Why hide: no guess is better than a wrong number
+    return;
+  }
+  line.textContent = spellsText(usage.remaining);
+  line.hidden = false;
+}
+
+// Checks a pass and shows the right message. Returns true when it was accepted.
+async function submitJudgePass(pass) {
+  judgeSubmit.disabled = true; // Why: one check at a time
+  judgeMessage.textContent = "🕯️ Checking your key...";
+  judgeMessage.hidden = false;
+  const result = pass.length >= 1 && pass.length <= 128 ? await checkJudge(pass) : { status: "invalid" };
+  judgeSubmit.disabled = false;
+
+  if (result.status === "valid") {
+    try {
+      sessionStorage.setItem(JUDGE_KEY, pass); // lasts until the tab session ends (Req 11.14)
+    } catch {
+      // Storage blocked: the pass still works until the page is reloaded.
+    }
+    state.judgePass = pass;
+    judgeInput.value = "";
+    judgeMessage.textContent = judgeText.welcome(result.remaining);
+    refreshUsage();
+    return true;
+  }
+  // Every other outcome leaves the stored pass untouched (Req 11.9).
+  if (result.status === "invalid") judgeMessage.textContent = judgeText.invalid;
+  else if (result.status === "locked") judgeMessage.textContent = judgeText.sealed(result.retryAfter);
+  else judgeMessage.textContent = judgeText.failed;
+  return false;
+}
+
+judgeForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const pass = judgeInput.value;
+  if (pass === "" || judgeSubmit.disabled) return;
+  submitJudgePass(pass);
+});
+
+// ?pass=... in the address: submit at once (within 1 s), then hide it from the bar on success.
+async function handlePassParameter() {
+  const url = new URL(window.location.href);
+  const pass = url.searchParams.get("pass");
+  if (!pass) return;
+  const ok = await submitJudgePass(pass);
+  if (ok) {
+    url.searchParams.delete("pass");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  }
+}
+
 // Read the gallery once at page load so a broken store is reported early (Req 9.16).
 refreshGallery();
+refreshUsage();
+handlePassParameter();
 
 syncDescription();
 showScreen("booth");

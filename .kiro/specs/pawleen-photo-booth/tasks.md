@@ -290,7 +290,7 @@ Conventions for every task:
     - Rebuild `tailwind.css`. Manual check: save, reload (same order), delete, keep, clear all. `pytest` passes.
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 9.10, 9.11, 9.12, 9.13, 9.14, 9.15, 9.16, 4.16_
 
-  - [ ] 10.2 Add the Judge_Pass box, usage display, and limit messages
+  - [x] 10.2 Add the Judge_Pass box, usage display, and limit messages
     - In `api.js` add `getUsage()` and `checkJudge(pass)` (10-second timeout). In `main.js` and `index.html`: the "Have a judge pass?" box (1 to 128 characters), the `?pass=` flow (submit within 1 second of load, remove the parameter with `history.replaceState` on success), store the valid pass in `sessionStorage` (`pawleenJudgePass`) and send it as `X-Judge-Pass`, the messages for welcome ("🔑 Welcome, honoured judge! The crypt is open, with N spells for tonight."), invalid pass (previous stored pass unchanged), crypt sealed with a relative time, and "could not be checked". Show the visitor and global limit messages with relative reset times from `retry_after_seconds` (hours rounded up at 1 hour or more, otherwise minutes; never UTC).
     - Add a small exported `formatRelative(seconds)` in `messages.js` that matches the backend rule.
     - Rebuild `tailwind.css`. Manual check with `JUDGE_PASS` set in `.env`, including a wrong pass 5 times. `pytest` passes.

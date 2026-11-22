@@ -104,3 +104,61 @@ export async function summon(formData, judgePass, onEvent, signal) {
     if (signal) signal.removeEventListener("abort", onCallerAbort);
   }
 }
+
+// ---- Usage and judge pass (task 10.2) ----
+
+export const JUDGE_TIMEOUT_MS = 10000; // Req 11.11
+
+// fetch with a time limit. Why: a silent server must not hang the judge box.
+async function fetchWithTimeout(url, options) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), JUDGE_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Returns { remaining, limit, is_judge, reset_in_seconds }, or null if it failed.
+export async function getUsage(judgePass) {
+  const headers = {};
+  if (judgePass) headers["X-Judge-Pass"] = judgePass;
+  try {
+    const response = await fetchWithTimeout("/api/usage", { headers });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+// Asks the server if the pass is right. The pass goes in the body, never in a URL.
+// Returns one of:
+//   { status: "valid", remaining }
+//   { status: "invalid" }
+//   { status: "locked", retryAfter }   (5 wrong tries, Req 11.10)
+//   { status: "failed" }               (timeout or server error, Req 11.11)
+export async function checkJudge(pass) {
+  try {
+    const response = await fetchWithTimeout("/api/judge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pass }),
+    });
+    if (response.status === 429) {
+      const info = (await response.json()).error || {};
+      if (info.code === "judge_locked") {
+        return { status: "locked", retryAfter: info.retry_after_seconds ?? 3600 };
+      }
+      return { status: "failed" };
+    }
+    if (!response.ok) return { status: "failed" };
+    const data = await response.json();
+    if (data.valid === true) return { status: "valid", remaining: data.remaining };
+    if (data.valid === false) return { status: "invalid" };
+    return { status: "failed" };
+  } catch {
+    return { status: "failed" };
+  }
+}
