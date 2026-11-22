@@ -521,6 +521,18 @@
         "chatSessionId": "sess_82b24dc5-2461-468f-bafb-d33d97d876b9",
         "timestamp": 1795384071673
       }
+    ],
+    "12.4 Implement the real Quality Checker (`app/agents/quality_checker.py`) with tests": [
+      {
+        "executionId": "3c851c16-b66c-4dcb-9a56-de81a49af3bd",
+        "chatSessionId": "sess_d2ec1803-3b79-4c75-bddb-3057a498250f",
+        "timestamp": 1795384250425
+      },
+      {
+        "executionId": "3c851c16-b66c-4dcb-9a56-de81a49af3bd",
+        "chatSessionId": "sess_d2ec1803-3b79-4c75-bddb-3057a498250f",
+        "timestamp": 1795384312824
+      }
     ]
   }
 }

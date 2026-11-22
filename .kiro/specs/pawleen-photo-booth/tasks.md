@@ -331,7 +331,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.8, 5.11, 6.8, 13.13_
 
-  - [ ] 12.4 Implement the real Quality Checker (`app/agents/quality_checker.py`) with tests
+  - [x] 12.4 Implement the real Quality Checker (`app/agents/quality_checker.py`) with tests
     - Build the `CheckResult` schema (`same_pet`, `costume_applied`, `no_cropping`, `reasons`, `passed_count`, `all_passed`) and the prompt using the rules for same species and primary coat colors, visible costume, and cropping fails only when head, ears, hat, paws, or main costume is cut off (a tail tip or cape edge touching the border passes). Send the original pet and the costumed image.
     - Write `tests/test_quality_checker.py` with a mocked `vision_json`: all pass, each single check failing with its reason, `passed_count` values, the prompt contains the three rules, the env vision model is used.
     - `pytest` passes.
