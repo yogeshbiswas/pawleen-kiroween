@@ -1,0 +1,31 @@
+/* Self-hosted fonts (Creepster and Inter are SIL OFL 1.1, see static/fonts/*-OFL.txt).
+   Why self-hosted: no third-party requests, so visitor IPs never reach a font host. */
+
+/* font-display: swap shows fallback text at once, then swaps when the font loads. */
+@font-face {
+  font-family: "Creepster";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/Creepster-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900; /* variable font: one file covers every weight */
+  font-display: swap;
+  src: url("/static/fonts/Inter-Variable.woff2") format("woff2");
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+/* Creepster only has a regular weight; 400 stops the browser faking a bold. */
+h1,
+h2,
+h3 {
+  font-family: "Creepster", serif;
+  font-weight: 400;
+}

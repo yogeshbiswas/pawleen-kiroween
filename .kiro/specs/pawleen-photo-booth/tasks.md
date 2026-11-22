@@ -235,7 +235,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 14.9, 14.7_
 
-  - [ ] 8.2 Add self-hosted fonts and license files
+  - [x] 8.2 Add self-hosted fonts and license files
     - Download `Creepster-Regular.woff2` and `Inter-Variable.woff2` (latin subset) from the official sources into `static/fonts/`, plus `Creepster-OFL.txt` and `Inter-OFL.txt` from the same sources. Confirm each license text matches the downloaded version.
     - Create `static/css/styles.css` with the two `@font-face` rules (`font-display: swap`, same-origin `/static/fonts/...` URLs) and the font stacks with generic fallbacks (`"Creepster", serif`, `"Inter", sans-serif`), with headings at `font-weight: 400`.
     - Extend `tests/test_static_assets.py`: both `woff2` files and both license files exist; `styles.css` declares both fonts with `font-display: swap`; every `url(...)` in `styles.css` is a same-origin path; no CDN or Google Fonts reference anywhere in `static/`.

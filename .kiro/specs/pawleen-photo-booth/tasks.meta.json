@@ -363,6 +363,18 @@
         "chatSessionId": "sess_9757d548-7bf8-4664-a63f-e30185f15744",
         "timestamp": 1795374183774
       }
+    ],
+    "8.2 Add self-hosted fonts and license files": [
+      {
+        "executionId": "752b36dd-6c28-4eb5-ae00-31661afd447b",
+        "chatSessionId": "sess_0957c6a4-12aa-4897-8826-5f1c76623d3e",
+        "timestamp": 1795374830307
+      },
+      {
+        "executionId": "752b36dd-6c28-4eb5-ae00-31661afd447b",
+        "chatSessionId": "sess_0957c6a4-12aa-4897-8826-5f1c76623d3e",
+        "timestamp": 1795374938819
+      }
     ]
   }
 }
