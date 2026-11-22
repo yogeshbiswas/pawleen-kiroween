@@ -2,6 +2,7 @@
 
 import { prepareImage, PrepError } from "/static/js/image-prep.js";
 import { MESSAGES } from "/static/js/messages.js";
+import { summon } from "/static/js/api.js";
 
 export const SCREENS = ["booth", "progress", "result", "gallery", "error"];
 
@@ -172,12 +173,169 @@ for (const chip of document.querySelectorAll("#chips .chip")) {
   });
 }
 
-// The real request is sent by the summon code in task 8.6, which listens for this event.
 $("booth-form").addEventListener("submit", (event) => {
   event.preventDefault();
   if (state.busy || !canSummon()) return;
-  document.dispatchEvent(new CustomEvent("booth:summon"));
+  startSummon();
 });
+
+// ---- Summon stream and Progress_Screen (task 8.6) ----
+
+const STEP_ORDER = ["gatekeeping", "brewing", "checking"];
+const STEP_PERCENT = { gatekeeping: 0, brewing: 33, checking: 66 }; // Req 7.4: 0, 33, 66, 100
+const STEP_ICONS = ["🔮", "🧪", "🔍"];
+const STEP_TEXT = {
+  gatekeeping: MESSAGES.stepGatekeeping,
+  brewing: MESSAGES.stepBrewing,
+  checking: MESSAGES.stepChecking,
+};
+const ROTATE_MS = 4000; // Req 7.7
+const READY_PAUSE_MS = 900; // short pause so the visitor sees the 100 % bar
+
+state.judgePass = null; // set by the judge task; sent only as a header
+state.result = null; // the last result event, shown by the result screen (task 8.7)
+
+let summonAbort = null; // lets the back button stop a running request
+let rotateTimer = null;
+let readyTimer = null;
+
+function setProgress(percent) {
+  $("progress-fill").style.width = `${percent}%`;
+  $("progress-track").setAttribute("aria-valuenow", String(percent));
+}
+
+// Rows before the current step are done (✅), the current one glows, later ones are dimmed.
+// Passing an index past the last row marks every row complete.
+function setActiveIndex(index) {
+  document.querySelectorAll("#progress-steps li").forEach((row, i) => {
+    const rowState = i < index ? "complete" : i === index ? "active" : "pending";
+    row.dataset.state = rowState;
+    row.querySelector(".step-icon").textContent = rowState === "complete" ? "✅" : STEP_ICONS[i];
+  });
+}
+
+function stopRotation() {
+  clearInterval(rotateTimer);
+  rotateTimer = null;
+}
+
+function startRotation() {
+  stopRotation();
+  const sub = $("progress-sub");
+  let i = 0;
+  sub.textContent = MESSAGES.brewingLines[0];
+  sub.hidden = false;
+  rotateTimer = setInterval(() => {
+    i = (i + 1) % MESSAGES.brewingLines.length;
+    sub.textContent = MESSAGES.brewingLines[i];
+  }, ROTATE_MS);
+}
+
+function resetProgress() {
+  stopRotation();
+  clearTimeout(readyTimer);
+  setActiveIndex(0);
+  setProgress(0);
+  $("progress-message").textContent = MESSAGES.stepGatekeeping;
+  $("progress-sub").hidden = true;
+}
+
+function handleStep(data) {
+  const index = STEP_ORDER.indexOf(data.step);
+  if (index < 0) return;
+  setActiveIndex(index);
+  setProgress(STEP_PERCENT[data.step]);
+  // Req 7.8: a second round says so, with the attempt number.
+  $("progress-message").textContent = data.recast
+    ? `${MESSAGES.recast} Attempt ${data.attempt} of ${data.max_attempts}`
+    : STEP_TEXT[data.step];
+  if (data.step === "brewing") startRotation();
+  else {
+    stopRotation();
+    $("progress-sub").hidden = true;
+  }
+}
+
+// Fills the error screen. Chips are shown only when the server asks for them (Req 4.10).
+function showFailure(message, showChips) {
+  stopRotation();
+  $("error-message").textContent = message || MESSAGES.genericError;
+  const chipBox = $("error-chips");
+  chipBox.replaceChildren();
+  chipBox.hidden = !showChips;
+  if (showChips) {
+    for (const source of document.querySelectorAll("#chips .chip")) {
+      const chip = source.cloneNode(true);
+      chip.addEventListener("click", () => {
+        // Same as the booth chips: fill the description, then go back to the booth.
+        description.value = chip.dataset.text.slice(0, DESCRIPTION_MAX);
+        trimmed.hidden = true;
+        syncDescription();
+        backToBooth();
+      });
+      chipBox.append(chip);
+    }
+  }
+  showScreen("error");
+  setBusy(false);
+}
+
+// All selections live in `state` and the form, so going back keeps them (Req 7.12).
+function backToBooth() {
+  if (summonAbort) summonAbort.abort();
+  summonAbort = null;
+  resetProgress();
+  showScreen("booth");
+  setBusy(false);
+}
+
+$("error-back").addEventListener("click", backToBooth);
+
+async function startSummon() {
+  // Build and send at once, so the request leaves well within 500 ms of the click (Req 3.6).
+  const form = new FormData();
+  form.append("pet_photo", state.petPrepared.blob, "pet.jpg");
+  if (state.costumePrepared) {
+    form.append("costume_photo", state.costumePrepared.blob, "costume.jpg");
+  }
+  form.append("description", state.description.trim());
+
+  setBusy(true);
+  resetProgress();
+  showScreen("progress");
+  summonAbort = new AbortController();
+  const myAbort = summonAbort;
+  let finished = false; // one terminal event (result or error) ends the run
+
+  const onEvent = (type, data) => {
+    if (finished) return;
+    if (type === "step") handleStep(data);
+    else if (type === "result") {
+      finished = true;
+      stopRotation();
+      state.result = data;
+      setActiveIndex(STEP_ORDER.length); // all three rows complete
+      setProgress(100);
+      $("progress-message").textContent = MESSAGES.ready;
+      $("progress-sub").hidden = true;
+      // Task 8.7 renders the result; here we only switch to its screen.
+      readyTimer = setTimeout(() => {
+        showScreen("result");
+        setBusy(false);
+      }, READY_PAUSE_MS);
+    } else if (type === "error") {
+      finished = true;
+      showFailure(data.message, Boolean(data.show_chips));
+    }
+    // "heartbeat" needs no UI; api.js already reset the watchdog.
+  };
+
+  const outcome = await summon(form, state.judgePass, onEvent, myAbort.signal);
+  if (outcome === "aborted" || finished) return;
+  // Stream ended or died without a result or error: treat as a lost connection (Req 7.13).
+  finished = true;
+  showFailure(MESSAGES.connectionLost, false);
+}
 
 syncDescription();
 showScreen("booth");

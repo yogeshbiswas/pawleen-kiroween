@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import math
 import os
 import sys
 from collections.abc import Mapping
@@ -30,11 +31,31 @@ def fake_agents_requested(env: Mapping[str, str]) -> bool:
     return (env.get("USE_FAKE_AGENTS") or "").strip() == "1"
 
 
-def _build_fake_agents():
+DEFAULT_FAKE_MAKER_DELAY = 0.5
+
+
+def fake_maker_delay(env: Mapping[str, str]) -> float:
+    """Dev-only delay for the fake Costume Maker. Invalid values keep the default."""
+    raw = (env.get("FAKE_MAKER_DELAY_SECONDS") or "").strip()
+    if not raw:
+        return DEFAULT_FAKE_MAKER_DELAY
+    try:
+        value = float(raw)
+    except ValueError:
+        value = -1.0
+    # nan and inf pass float() but are not usable delays.
+    if not math.isfinite(value) or value < 0:
+        logger.warning("FAKE_MAKER_DELAY_SECONDS is invalid, using %s", DEFAULT_FAKE_MAKER_DELAY)
+        return DEFAULT_FAKE_MAKER_DELAY
+    return value
+
+
+def _build_fake_agents(env: Mapping[str, str]):
     from app.fakes import DevCostumeMaker, DevGatekeeper, DevQualityChecker
     from app.pipeline import Agents
 
-    return Agents(gatekeeper=DevGatekeeper(), maker=DevCostumeMaker(), checker=DevQualityChecker())
+    maker = DevCostumeMaker(delay=fake_maker_delay(env))
+    return Agents(gatekeeper=DevGatekeeper(), maker=maker, checker=DevQualityChecker())
 
 
 def create_app(settings: Settings | None = None, agents=None) -> FastAPI:
@@ -51,7 +72,7 @@ def create_app(settings: Settings | None = None, agents=None) -> FastAPI:
         problems = []
 
     if agents is None and fake_agents_requested(os.environ):
-        agents = _build_fake_agents()
+        agents = _build_fake_agents(os.environ)
         logger.warning("USE_FAKE_AGENTS is on: fake agents are used, no OpenAI calls are made")
 
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)

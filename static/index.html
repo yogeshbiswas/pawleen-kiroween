@@ -104,6 +104,30 @@
 
     <section id="screen-progress" data-screen="progress" aria-labelledby="progress-title" hidden>
       <h2 id="progress-title" class="text-2xl text-pumpkin">The spirits are working...</h2>
+
+      <!-- role=status so screen readers hear each new message. -->
+      <p id="progress-message" class="mt-3 text-lg" role="status" aria-live="polite">The Gatekeeper is inspecting your pet...</p>
+      <p id="progress-sub" class="mt-1 text-sm text-witch-light" aria-live="polite" hidden></p>
+
+      <div class="mt-4 h-4 w-full overflow-hidden rounded-full border border-witch/60 bg-black/40"
+        role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+        <div id="progress-fill" class="progress-fill h-full rounded-full bg-pumpkin" style="width: 0%"></div>
+      </div>
+
+      <ol class="mt-4 flex flex-col gap-2" id="progress-steps">
+        <li data-step="gatekeeping" data-state="pending" class="step-row flex min-h-11 items-center gap-3 rounded-lg border border-witch/40 px-3 py-2">
+          <span class="step-icon w-6 text-center" aria-hidden="true">🔮</span>
+          <span>Gatekeeper</span>
+        </li>
+        <li data-step="brewing" data-state="pending" class="step-row flex min-h-11 items-center gap-3 rounded-lg border border-witch/40 px-3 py-2">
+          <span class="step-icon w-6 text-center" aria-hidden="true">🧪</span>
+          <span>Costume Maker</span>
+        </li>
+        <li data-step="checking" data-state="pending" class="step-row flex min-h-11 items-center gap-3 rounded-lg border border-witch/40 px-3 py-2">
+          <span class="step-icon w-6 text-center" aria-hidden="true">🔍</span>
+          <span>Quality Checker</span>
+        </li>
+      </ol>
     </section>
 
     <section id="screen-result" data-screen="result" aria-labelledby="result-title" hidden>
@@ -116,6 +140,12 @@
 
     <section id="screen-error" data-screen="error" aria-labelledby="error-title" hidden>
       <h2 id="error-title" class="text-2xl text-pumpkin">Something went bump</h2>
+      <p id="error-message" class="mt-3 text-lg" role="alert"></p>
+      <div id="error-chips" class="mt-3 flex flex-wrap gap-2" role="group" aria-label="Costume ideas" hidden></div>
+      <button type="button" id="error-back"
+        class="mt-4 min-h-12 w-full rounded-xl bg-pumpkin px-4 py-3 text-lg font-bold text-night">
+        ⬅️ Back to the booth
+      </button>
     </section>
   </main>
 

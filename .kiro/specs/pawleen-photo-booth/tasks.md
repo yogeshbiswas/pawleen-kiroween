@@ -264,7 +264,7 @@ Conventions for every task:
     - Rebuild `tailwind.css`. Manual check against the rules above on a desktop browser. `pytest` passes.
     - _Requirements: 1.1, 1.2, 1.3, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 2.14, 3.6_
 
-  - [ ] 8.6 Implement the summon stream and the Progress_Screen
+  - [x] 8.6 Implement the summon stream and the Progress_Screen
     - Create `static/js/api.js` with `summon(formData, judgePass, onEvent, signal)` (fetch plus `ReadableStream`, SSE frame parser exported as `parseFrame`) and a 30-second watchdog that is reset by every event including `heartbeat`.
     - In `main.js` and `index.html` build the Progress_Screen: three step rows (pending dimmed, active glowing, complete ✅), a glowing progress bar (0, 33, 66, 100 %), the step messages ("The Gatekeeper is inspecting your pet...", "Brewing the costume spell...", "Checking the transformation..."), the 4-second line rotation during brewing, the recast message with "Attempt 2 of 2", and the final "🎃 Your spooky pet is ready!".
     - Handle failures: pre-stream JSON errors and `error` events replace the screen within 1 second with the spooky message (plus Example_Chips when `show_chips`) and a back button; the watchdog shows a "connection lost" message with a back button; back returns to the booth with all selections kept. Send the form data within 500 ms of the click.

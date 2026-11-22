@@ -40,6 +40,27 @@ body {
   overflow-x: hidden; /* Why: stops any wide child from causing sideways scroll on phones */
 }
 
+/* Progress screen: pending rows dimmed, active row glowing, complete rows normal. */
+.step-row[data-state="pending"] {
+  opacity: 0.4;
+}
+.step-row[data-state="active"] {
+  border-color: #f97316;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.7);
+}
+.step-row[data-state="complete"] {
+  border-color: rgba(167, 139, 250, 0.7);
+}
+.progress-fill {
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.9);
+  transition: width 0.4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill {
+    transition: none;
+  }
+}
+
 /* A visible focus ring for keyboard users, in the orange accent. */
 :focus-visible {
   outline: 2px solid #f97316;

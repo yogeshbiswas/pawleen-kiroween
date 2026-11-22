@@ -14,4 +14,21 @@ export const MESSAGES = {
   smallPhoto: "Small photo, the result may be a bit blurry 🌙",
   // Req 1.7: tip next to the pet upload
   onePetTip: "Works best with one pet per photo 🐾",
+
+  // Req 7.x: progress texts
+  stepGatekeeping: "The Gatekeeper is inspecting your pet...",
+  stepBrewing: "Brewing the costume spell...",
+  stepChecking: "Checking the transformation...",
+  recast: "The first spell wobbled, so we are casting it again.", // main.js adds "Attempt 2 of 2"
+  ready: "🎃 Your spooky pet is ready!",
+  // Req 7.7: lines that rotate every 4 seconds while brewing
+  brewingLines: [
+    "Stirring the cauldron...",
+    "Adding a pinch of moonlight...",
+    "Almost there, the spell is thickening...",
+  ],
+  // Req 7.13: the stream went silent for 30 s, or the network dropped
+  connectionLost: "The spirits lost the connection 🕸️ Please go back to the booth and try again. Your choices are kept.",
+  // Fallback when the server sends an error without text
+  genericError: "The spirits tripped over a cobweb 🕸️ Please go back to the booth and try again.",
 };

@@ -118,3 +118,18 @@ def test_main_passes_host_to_uvicorn(monkeypatch, value, expected):
     main_mod.main()
     assert captured["host"] == expected
     assert captured["workers"] == 1
+
+
+def test_fake_maker_delay_default_and_custom(monkeypatch):
+    monkeypatch.setenv("USE_FAKE_AGENTS", "1")
+    monkeypatch.delenv("FAKE_MAKER_DELAY_SECONDS", raising=False)
+    assert create_app(make_settings()).state.agents.maker.delay == 0.5
+    monkeypatch.setenv("FAKE_MAKER_DELAY_SECONDS", "8")
+    assert create_app(make_settings()).state.agents.maker.delay == 8
+
+
+@pytest.mark.parametrize("bad", ["abc", "-1", "nan", "inf", ""])
+def test_fake_maker_delay_ignores_invalid_values(monkeypatch, bad):
+    monkeypatch.setenv("USE_FAKE_AGENTS", "1")
+    monkeypatch.setenv("FAKE_MAKER_DELAY_SECONDS", bad)
+    assert create_app(make_settings()).state.agents.maker.delay == 0.5

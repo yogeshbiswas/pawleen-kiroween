@@ -215,3 +215,37 @@ def test_main_js_wires_prepare_image_and_button_rule():
     assert "state.petPrepared" in js and "state.costumePrepared" in js
     assert 'description.trim() !== ""' in js
     assert "MESSAGES.darkroom" in js and "MESSAGES.smallPhoto" in js
+
+
+# ---- Part 5: summon stream and progress screen (task 8.6) ----
+def test_api_js_has_parse_frame_and_30s_watchdog():
+    js = (STATIC / "js" / "api.js").read_text(encoding="utf-8")
+    assert "export function parseFrame" in js
+    assert "export async function summon" in js
+    assert "WATCHDOG_MS = 30000" in js
+    assert "X-Judge-Pass" in js
+
+
+def test_progress_texts_are_present():
+    js = (STATIC / "js" / "messages.js").read_text(encoding="utf-8")
+    for text in (
+        "The Gatekeeper is inspecting your pet...",
+        "Brewing the costume spell...",
+        "Checking the transformation...",
+        "Stirring the cauldron...",
+        "Adding a pinch of moonlight...",
+        "Almost there, the spell is thickening...",
+        "🎃 Your spooky pet is ready!",
+    ):
+        assert text in js
+    assert "Attempt ${data.attempt} of ${data.max_attempts}" in (
+        STATIC / "js" / "main.js"
+    ).read_text(encoding="utf-8")
+
+
+def test_progress_screen_has_three_steps_bar_and_error_back_button():
+    html = INDEX.read_text(encoding="utf-8")
+    for step in ("gatekeeping", "brewing", "checking"):
+        assert f'data-step="{step}"' in html
+    assert 'id="progress-fill"' in html
+    assert 'id="error-back"' in html
