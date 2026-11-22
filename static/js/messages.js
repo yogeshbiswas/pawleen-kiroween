@@ -31,6 +31,13 @@ export const MESSAGES = {
   connectionLost: "The spirits lost the connection 🕸️ Please go back to the booth and try again. Your choices are kept.",
   // Req 8.5: saving the image failed
   downloadFailed: "The spirits dropped the portrait 🕸️ Please tap the download button to try again.",
+  // Req 9.15: the browser refused to store the image
+  notSaved: "The gallery crypt is full or locked 🕸️ This spell was not saved. Download it now to keep it.",
+  // Req 9.16: reading the gallery failed (nothing was deleted)
+  galleryLoadFailed: "The gallery could not be loaded 👻 Your saved spells are untouched. Please reload the page.",
+  galleryDeleteFailed: "The spell refused to leave 🕸️ Nothing was removed. Please try again.",
+  // Req 9.13: empty gallery
+  galleryEmpty: "👻 Nothing haunts this gallery yet. Go to the booth and summon your first costume!",
   // Notices shown if the server did not send its own text
   notVerified: "We could not double-check this spell 🔮 The portrait is yours, but it may look a bit odd.",
   wonky: "This spell came out a little wonky 🌀 You can try another costume for a better result.",

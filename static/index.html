@@ -29,6 +29,9 @@
   </header>
 
   <main class="flex-1 w-full max-w-3xl mx-auto px-3 py-4">
+    <!-- Shown on any screen if the gallery cannot be read at page load (Req 9.16). -->
+    <p id="gallery-load-error" class="mb-3 text-sm text-orange-300" role="alert" hidden></p>
+
     <section id="screen-booth" data-screen="booth" aria-labelledby="booth-title">
       <h1 id="booth-title" class="text-3xl text-pumpkin">Pawleen's Photo Booth</h1>
       <p class="mt-2">Upload your pet and pick a costume. The booth does the rest.</p>
@@ -153,6 +156,8 @@
 
       <p id="result-spells" class="mt-4 text-center text-lg" aria-live="polite"></p>
       <p id="result-error" class="mt-2 text-sm text-orange-300" role="alert" hidden></p>
+      <!-- Shown when the gallery could not keep this image (Req 9.15); download still works. -->
+      <p id="result-save-error" class="mt-2 text-sm text-orange-300" role="alert" hidden></p>
 
       <div class="mt-3 flex flex-col gap-3">
         <button type="button" id="result-download"
@@ -176,7 +181,43 @@
     </section>
 
     <section id="screen-gallery" data-screen="gallery" aria-labelledby="gallery-title" hidden>
-      <h2 id="gallery-title" class="text-2xl text-pumpkin">Haunted Gallery</h2>
+      <h2 id="gallery-title" tabindex="-1" class="text-2xl text-pumpkin">Haunted Gallery</h2>
+      <p class="mt-2 text-sm text-witch-light" id="gallery-hint">🦇 Your gallery lives in this browser. Download your favourites to keep them forever!</p>
+      <p id="gallery-error" class="mt-2 text-sm text-orange-300" role="alert" hidden></p>
+
+      <!-- List view -->
+      <div id="gallery-list-view">
+        <p id="gallery-empty" class="mt-4 text-lg" hidden>👻 Nothing haunts this gallery yet. Go to the booth and summon your first costume!</p>
+        <!-- Two columns fit a 320 px phone; min-w-0 lets long names wrap instead of widening the page. -->
+        <ul id="gallery-grid" class="mt-4 grid grid-cols-2 gap-3 min-[640px]:grid-cols-3"></ul>
+        <button type="button" id="gallery-clear" hidden
+          class="mt-4 min-h-12 w-full rounded-xl border border-witch px-4 py-3 text-witch-light hover:bg-witch/20">
+          🪦 Clear my whole gallery
+        </button>
+      </div>
+
+      <!-- Detail view -->
+      <div id="gallery-detail-view" hidden>
+        <button type="button" id="gallery-back"
+          class="mt-4 min-h-11 rounded-lg border border-witch px-3 text-witch-light hover:bg-witch/20">
+          ⬅️ Back to the gallery
+        </button>
+        <h3 id="gallery-detail-name" class="mt-3 break-words text-xl text-pumpkin"></h3>
+        <p id="gallery-detail-date" class="text-sm text-witch-light"></p>
+        <!-- Natural size, shrunk only when it would not fit the screen. -->
+        <div class="mt-3 flex justify-center">
+          <img id="gallery-detail-image" alt="Your saved spooky pet" class="h-auto max-h-[80vh] w-auto max-w-full object-contain">
+        </div>
+        <p id="gallery-detail-error" class="mt-2 text-sm text-orange-300" role="alert" hidden></p>
+        <div class="mt-3 flex flex-col gap-3">
+          <button type="button" id="gallery-download"
+            class="min-h-12 w-full rounded-xl bg-pumpkin px-4 py-3 text-lg font-bold text-night">💾 Download</button>
+          <button type="button" id="gallery-share" hidden
+            class="min-h-12 w-full rounded-xl border border-pumpkin px-4 py-3 text-lg font-bold text-pumpkin hover:bg-pumpkin/20">📤 Share</button>
+          <button type="button" id="gallery-delete"
+            class="min-h-12 w-full rounded-xl border border-witch px-4 py-3 text-witch-light hover:bg-witch/20">🪦 Delete</button>
+        </div>
+      </div>
     </section>
 
     <section id="screen-error" data-screen="error" aria-labelledby="error-title" hidden>
@@ -189,6 +230,20 @@
       </button>
     </section>
   </main>
+
+  <!-- Shared confirm dialog (delete one, or clear all). Focus is trapped in it by main.js. -->
+  <div id="confirm-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3" hidden>
+    <div role="alertdialog" aria-modal="true" aria-labelledby="confirm-text"
+      class="w-full max-w-sm rounded-xl border border-witch bg-night p-4">
+      <p id="confirm-text" class="text-lg">🪦 Banish this spell forever? This can't be undone.</p>
+      <div class="mt-4 flex flex-col gap-3 min-[400px]:flex-row">
+        <button type="button" id="confirm-yes"
+          class="min-h-12 flex-1 rounded-xl bg-pumpkin px-4 py-3 font-bold text-night">Banish</button>
+        <button type="button" id="confirm-no"
+          class="min-h-12 flex-1 rounded-xl border border-witch px-4 py-3 text-witch-light hover:bg-witch/20">Keep it</button>
+      </div>
+    </div>
+  </div>
 
   <!-- One shared footer sits outside the sections, so it shows on every screen. -->
   <footer class="px-3 py-4 text-center text-sm text-witch-light border-t border-witch/40">

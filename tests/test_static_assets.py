@@ -249,3 +249,33 @@ def test_progress_screen_has_three_steps_bar_and_error_back_button():
         assert f'data-step="{step}"' in html
     assert 'id="progress-fill"' in html
     assert 'id="error-back"' in html
+
+
+# ---- Part 6: Haunted_Gallery (task 10.1) ----
+def test_gallery_js_has_store_and_functions():
+    js = (STATIC / "js" / "gallery.js").read_text(encoding="utf-8")
+    assert 'DB_NAME = "pawleen"' in js and 'STORE = "spells"' in js
+    assert 'keyPath: "id"' in js and 'createIndex("savedAt"' in js
+    for name in ("saveSpell", "listSpells", "deleteSpell", "clearAll", "costumeNameFor"):
+        assert f"export function {name}" in js or f"export async function {name}" in js
+    assert '"Mystery costume"' in js
+    # Why: gallery contents must never go to the backend (Req 9.14).
+    assert "fetch(" not in js
+
+
+def test_gallery_view_texts_are_present():
+    html = INDEX.read_text(encoding="utf-8")
+    for text in (
+        "🦇 Your gallery lives in this browser. Download your favourites to keep them forever!",
+        "🪦 Banish this spell forever? This can't be undone.",
+        ">Banish<",
+        ">Keep it<",
+        "Clear my whole gallery",
+    ):
+        assert text in html
+
+
+def test_gallery_code_does_not_send_images_to_backend():
+    js = (STATIC / "js" / "main.js").read_text(encoding="utf-8")
+    start = js.index("Haunted_Gallery view")
+    assert "fetch(" not in js[start:] and "summon(" not in js[start:]

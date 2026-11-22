@@ -284,7 +284,7 @@ Conventions for every task:
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Gallery, judge pass, privacy banner, and sound
-  - [ ] 10.1 Implement the Haunted_Gallery (`static/js/gallery.js`) and its view
+  - [x] 10.1 Implement the Haunted_Gallery (`static/js/gallery.js`) and its view
     - Create `gallery.js` with IndexedDB database `pawleen`, store `spells` (`id`, `blob`, `costumeName`, `savedAt`, index on `savedAt`), and `saveSpell`, `listSpells` (newest first), `deleteSpell`, `clearAll`, plus the exported `costumeNameFor(description, gatekeeperName)` rule (description, else Costume_Name, else "Mystery costume").
     - In `main.js` and `index.html`: save the result image within 2 seconds of receiving it (decode base64 to a Blob); the gallery view with thumbnails (newest first, name and date), the hint "🦇 Your gallery lives in this browser. Download your favourites to keep them forever!", a detail view (original size scaled to fit, download, share, delete), the shared "🪦 Banish this spell forever? This can't be undone." dialog with "Banish" and "Keep it" (focus trapped and returned), "Clear my whole gallery", and the empty-state message. Handle a full or unavailable store (message plus download still available) and a failed read (message, nothing deleted). Send nothing from the gallery to the backend.
     - Rebuild `tailwind.css`. Manual check: save, reload (same order), delete, keep, clear all. `pytest` passes.

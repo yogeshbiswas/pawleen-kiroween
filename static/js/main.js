@@ -3,6 +3,7 @@
 import { prepareImage, PrepError } from "/static/js/image-prep.js";
 import { MESSAGES } from "/static/js/messages.js";
 import { summon } from "/static/js/api.js";
+import { costumeNameFor, saveSpell, listSpells, deleteSpell, clearAll } from "/static/js/gallery.js";
 
 export const SCREENS = ["booth", "progress", "result", "gallery", "error"];
 
@@ -46,7 +47,12 @@ function updateNavButton() {
 
 navButton?.addEventListener("click", () => {
   if (state.busy) return;
-  showScreen(state.screen === "gallery" ? "booth" : "gallery");
+  if (state.screen === "gallery") {
+    showScreen("booth");
+  } else {
+    showScreen("gallery");
+    openGalleryList();
+  }
 });
 
 // ---- Booth form (task 8.5) ----
@@ -325,6 +331,7 @@ async function startSummon() {
       finished = true;
       stopRotation();
       state.result = data;
+      saveToGallery(data); // right away, well inside the 2 seconds (Req 9.1)
       setActiveIndex(STEP_ORDER.length); // all three rows complete
       setProgress(100);
       $("progress-message").textContent = MESSAGES.ready;
@@ -447,6 +454,210 @@ $("result-new-pet").addEventListener("click", () => {
   state.result = null;
   showScreen("booth");
 });
+
+// ---- Haunted_Gallery view (task 10.1) ----
+
+// Saves the new result. A failure only shows a message: the image stays on the
+// result screen and can still be downloaded (Req 9.15).
+async function saveToGallery(data) {
+  $("result-save-error").hidden = true;
+  try {
+    const name = costumeNameFor(state.description, data.costume_name);
+    await saveSpell({ blob: base64ToBlob(data.image_b64, data.mime || "image/png"), costumeName: name });
+  } catch (err) {
+    show($("result-save-error"), MESSAGES.notSaved);
+  }
+}
+
+// Shared confirm dialog. Resolves true for "Banish", false for "Keep it" or Escape.
+// Focus stays inside the dialog and goes back to where it was afterwards (Req 9.8).
+function confirmBanish() {
+  return new Promise((resolve) => {
+    const overlay = $("confirm-overlay");
+    const yes = $("confirm-yes");
+    const no = $("confirm-no");
+    const opener = document.activeElement;
+
+    function close(answer) {
+      overlay.hidden = true;
+      document.removeEventListener("keydown", onKey, true);
+      yes.removeEventListener("click", onYes);
+      no.removeEventListener("click", onNo);
+      // If the opener was removed from the page meanwhile, fall back to the gallery title.
+      const target = opener && document.contains(opener) ? opener : $("gallery-title");
+      target.focus();
+      resolve(answer);
+    }
+    const onYes = () => close(true);
+    const onNo = () => close(false);
+    function onKey(event) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(false);
+      } else if (event.key === "Tab") {
+        // Two buttons only: wrap around so focus never leaves the dialog.
+        event.preventDefault();
+        (document.activeElement === no ? yes : no).focus();
+      }
+    }
+
+    yes.addEventListener("click", onYes);
+    no.addEventListener("click", onNo);
+    document.addEventListener("keydown", onKey, true);
+    overlay.hidden = false;
+    no.focus(); // the safe choice gets the focus first
+  });
+}
+
+const galleryGrid = $("gallery-grid");
+let thumbUrls = []; // revoked on each redraw so memory is freed
+let detailUrl = null;
+let current = null; // the spell open in the detail view
+
+function formatDate(ms) {
+  return new Date(ms).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+
+function showListView() {
+  $("gallery-list-view").hidden = false;
+  $("gallery-detail-view").hidden = true;
+  if (detailUrl) URL.revokeObjectURL(detailUrl);
+  detailUrl = null;
+  current = null;
+}
+
+// Reads the store and redraws the list. Returns false when the read failed.
+async function refreshGallery() {
+  let spells;
+  try {
+    spells = await listSpells();
+  } catch (err) {
+    // Read failed: say so and touch nothing in storage (Req 9.16).
+    show($("gallery-load-error"), MESSAGES.galleryLoadFailed);
+    galleryGrid.replaceChildren();
+    $("gallery-empty").hidden = true;
+    $("gallery-clear").hidden = true;
+    return false;
+  }
+  $("gallery-load-error").hidden = true;
+  thumbUrls.forEach((u) => URL.revokeObjectURL(u));
+  thumbUrls = [];
+  galleryGrid.replaceChildren(...spells.map(renderThumb));
+  $("gallery-empty").hidden = spells.length > 0;
+  $("gallery-clear").hidden = spells.length === 0;
+  return true;
+}
+
+function renderThumb(spell) {
+  const url = URL.createObjectURL(spell.blob);
+  thumbUrls.push(url);
+  const li = document.createElement("li");
+  li.className = "min-w-0";
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "flex w-full min-w-0 flex-col gap-1 rounded-xl border border-witch/60 p-2 text-left hover:bg-witch/20";
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "";
+  img.className = "aspect-[2/3] w-full rounded-lg object-cover";
+  const name = document.createElement("span");
+  name.className = "break-words text-sm text-pumpkin";
+  name.textContent = spell.costumeName;
+  const date = document.createElement("span");
+  date.className = "text-xs text-witch-light";
+  date.textContent = formatDate(spell.savedAt);
+  button.append(img, name, date);
+  button.setAttribute("aria-label", `${spell.costumeName}, ${formatDate(spell.savedAt)}`);
+  button.addEventListener("click", () => openDetail(spell));
+  li.append(button);
+  return li;
+}
+
+function openDetail(spell) {
+  current = spell;
+  if (detailUrl) URL.revokeObjectURL(detailUrl);
+  detailUrl = URL.createObjectURL(spell.blob);
+  $("gallery-detail-image").src = detailUrl;
+  $("gallery-detail-name").textContent = spell.costumeName;
+  $("gallery-detail-date").textContent = formatDate(spell.savedAt);
+  $("gallery-detail-error").hidden = true;
+  const file = spellFile(spell);
+  $("gallery-share").hidden = !(navigator.canShare && navigator.canShare({ files: [file] }));
+  $("gallery-list-view").hidden = true;
+  $("gallery-detail-view").hidden = false;
+  window.scrollTo(0, 0);
+}
+
+function spellFile(spell) {
+  const ext = spell.blob.type === "image/jpeg" ? "jpg" : "png";
+  return new File([spell.blob], `pawleen-spooky-pet-${spell.id}.${ext}`, { type: spell.blob.type });
+}
+
+async function openGalleryList() {
+  showListView();
+  $("gallery-error").hidden = true;
+  await refreshGallery();
+}
+
+// Original resolution: the stored Blob is saved as is (Req 9.5).
+$("gallery-download").addEventListener("click", () => {
+  if (!current) return;
+  try {
+    const link = document.createElement("a");
+    link.href = detailUrl;
+    link.download = spellFile(current).name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    $("gallery-detail-error").hidden = true;
+  } catch (err) {
+    show($("gallery-detail-error"), MESSAGES.downloadFailed);
+  }
+});
+
+$("gallery-share").addEventListener("click", async () => {
+  if (!current) return;
+  try {
+    await navigator.share({ files: [spellFile(current)], title: "My spooky pet" });
+  } catch (err) {
+    if (err && err.name === "AbortError") return; // closing the share sheet is fine
+    $("gallery-download").click(); // Req 8.7: fall back to a download
+  }
+});
+
+$("gallery-back").addEventListener("click", () => {
+  showListView();
+  $("gallery-title").focus();
+});
+
+$("gallery-delete").addEventListener("click", async () => {
+  if (!current || !(await confirmBanish())) return;
+  const id = current.id;
+  try {
+    await deleteSpell(id); // only this record (Req 9.9)
+  } catch (err) {
+    show($("gallery-detail-error"), MESSAGES.galleryDeleteFailed);
+    return;
+  }
+  showListView();
+  await refreshGallery();
+  $("gallery-title").focus();
+});
+
+$("gallery-clear").addEventListener("click", async () => {
+  if (!(await confirmBanish())) return;
+  try {
+    await clearAll();
+  } catch (err) {
+    show($("gallery-error"), MESSAGES.galleryDeleteFailed);
+    return;
+  }
+  await refreshGallery();
+  $("gallery-title").focus();
+});
+
+// Read the gallery once at page load so a broken store is reported early (Req 9.16).
+refreshGallery();
 
 syncDescription();
 showScreen("booth");
