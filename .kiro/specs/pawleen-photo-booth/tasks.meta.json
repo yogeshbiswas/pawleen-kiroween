@@ -545,6 +545,25 @@
         "chatSessionId": "sess_1061f7f3-d0ee-4097-8bc9-c16fced87d9f",
         "timestamp": 1795384555213
       }
+    ],
+    "12.8 Add a manual live smoke script": [
+      {
+        "executionId": "97e86f20-5377-42db-bb4b-e02e8c2a0426",
+        "chatSessionId": "sess_82facc81-7cf0-4380-8133-89c27cea60d4",
+        "timestamp": 1795384652735
+      },
+      {
+        "executionId": "97e86f20-5377-42db-bb4b-e02e8c2a0426",
+        "chatSessionId": "sess_82facc81-7cf0-4380-8133-89c27cea60d4",
+        "timestamp": 1795384706518
+      }
+    ],
+    "12. Connect the real OpenAI agents": [
+      {
+        "executionId": "97e86f20-5377-42db-bb4b-e02e8c2a0426",
+        "chatSessionId": "sess_82facc81-7cf0-4380-8133-89c27cea60d4",
+        "timestamp": 1795384706611
+      }
     ]
   }
 }

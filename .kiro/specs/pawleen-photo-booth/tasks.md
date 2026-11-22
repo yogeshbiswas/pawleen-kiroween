@@ -312,7 +312,7 @@ Conventions for every task:
   - Test in the browser with fake agents: gallery save and reload, delete, clear all; judge pass through the box and through `?pass=`; limit message after 3 summons; privacy banner; sound toggle. Repeat the key flows at 320 to 390 px width in devtools.
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Connect the real OpenAI agents
+- [x] 12. Connect the real OpenAI agents
   - [x] 12.1 Implement `app/openai_client.py` with tests (mocked SDK)
     - Create one shared `AsyncOpenAI(api_key=..., max_retries=0)` factory and the two thin wrappers `vision_json(...)` (Responses API `parse` with a Pydantic `text_format`, an `input_image` data URL, per-call timeout; a `None` parsed result becomes `refused` when there is a refusal item, otherwise a retriable bad output) and `edit_image(...)` (`images.edit` with `model`, one or two images, `prompt`, the portrait `size` and the allowed quality values confirmed in task 1.2, `quality=settings.image_quality`, per-call timeout, base64 decoded to PNG bytes). Use the call shapes recorded in `docs/openai-findings.md`.
     - Write `tests/test_openai_client.py` with a mocked SDK: client built with `max_retries=0`, `edit_image` receives the env model, portrait size, and `quality` equal to each of `low`, `medium`, `high`, and both images when a costume photo exists; `vision_json` passes `text_format` and the env model; a missing image in the response raises a mapped error; no image data appears in logs.
@@ -353,7 +353,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 13.1, 13.10, 13.11, 14.1_
 
-  - [ ] 12.8 Add a manual live smoke script
+  - [x] 12.8 Add a manual live smoke script
     - Create `scripts/live_smoke.py` that sends one real summon request to a base URL (default `http://localhost:8000`) with a sample pet image path from the command line, prints each SSE event name and the final status (never the image data or any key), and saves the result PNG to a local path you choose. It is run by hand only and is not part of `pytest`.
     - Add a small test that imports the script's event-printing helper and checks that it never prints image data.
     - `pytest` passes.
