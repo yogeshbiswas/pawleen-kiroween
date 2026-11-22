@@ -319,7 +319,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 4.2, 5.1, 5.9, 6.1, 13.2, 13.3, 13.13, 16.4, 16.8_
 
-  - [ ] 12.2 Implement the real Gatekeeper (`app/agents/gatekeeper.py`) with tests
+  - [x] 12.2 Implement the real Gatekeeper (`app/agents/gatekeeper.py`) with tests
     - Build the `GatekeeperVerdict` schema and the system prompt for Requirement 4 (any animal accepted, several animals fine, humans with an animal fine, reject only for no animal, unintelligible or harmful description, harmful or unrelated costume photo). Return a `GatekeeperDecision` and add `normalize_costume_name(name, description)` (strip, cut to 40 characters, `None` when a description exists or the text is empty or whitespace).
     - Write `tests/test_gatekeeper.py` with a mocked `vision_json`: accept, reject for no animal, reject for a bad description, reject for a harmful costume photo, photo-only request returns a name of at most 40 characters, description request returns no name, the reason maps to `no_animal` or `bad_costume`, the env vision model is used.
     - `pytest` passes.

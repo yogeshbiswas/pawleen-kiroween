@@ -497,6 +497,18 @@
         "chatSessionId": "sess_930512bf-15cc-45bf-a5b2-9ece04734a4c",
         "timestamp": 1795383181797
       }
+    ],
+    "12.2 Implement the real Gatekeeper (`app/agents/gatekeeper.py`) with tests": [
+      {
+        "executionId": "6a25ba6c-71a8-4559-b248-42a96117b521",
+        "chatSessionId": "sess_dddf5c7e-98e1-4a69-8769-e22f34e8b3a5",
+        "timestamp": 1795383641367
+      },
+      {
+        "executionId": "6a25ba6c-71a8-4559-b248-42a96117b521",
+        "chatSessionId": "sess_dddf5c7e-98e1-4a69-8769-e22f34e8b3a5",
+        "timestamp": 1795383721475
+      }
     ]
   }
 }

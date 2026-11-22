@@ -33,9 +33,24 @@ def _has_refusal(response) -> bool:
     return False
 
 
-async def vision_json(client, settings, *, system, user_text, image_bytes, mime, schema, timeout):
-    """Ask the vision model for JSON that fits `schema`; return the parsed model."""
-    data_url = f"data:{mime};base64," + base64.b64encode(image_bytes).decode("ascii")
+def _data_url(data: bytes, mime: str) -> str:
+    return f"data:{mime};base64," + base64.b64encode(data).decode("ascii")
+
+
+async def vision_json(
+    client, settings, *, system, user_text, image_bytes, mime, schema, timeout,
+    extra_images=(),
+):
+    """Ask the vision model for JSON that fits `schema`; return the parsed model.
+
+    `extra_images` is an optional list of (bytes, mime) sent after the main image
+    (the Gatekeeper uses it for the costume photo).
+    """
+    data_url = _data_url(image_bytes, mime)
+    extra_parts = [
+        {"type": "input_image", "image_url": _data_url(data, extra_mime)}
+        for data, extra_mime in extra_images
+    ]
     response = await client.responses.parse(
         model=settings.vision_model,
         input=[
@@ -45,6 +60,7 @@ async def vision_json(client, settings, *, system, user_text, image_bytes, mime,
                 "content": [
                     {"type": "input_text", "text": user_text},
                     {"type": "input_image", "image_url": data_url},
+                    *extra_parts,
                 ],
             },
         ],
