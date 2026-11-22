@@ -89,6 +89,161 @@ body {
   }
 }
 
+/* ---- Spooky effects (Req 15.3, 15.8) ----
+   All layers are fixed and pointer-events: none so taps and clicks pass through.
+   They use gradients and inline SVG only, so there are no external requests. */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Fog: two oversized radial-gradient layers drifting in opposite directions. */
+.fx-fog {
+  inset: -20%;
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(167, 139, 250, 0.35), transparent 60%),
+    radial-gradient(ellipse at 70% 30%, rgba(167, 139, 250, 0.25), transparent 55%);
+  animation: fog-drift 20s ease-in-out infinite alternate;
+}
+@keyframes fog-drift {
+  from {
+    transform: translate3d(-4%, 0, 0);
+  }
+  to {
+    transform: translate3d(4%, -3%, 0);
+  }
+}
+
+/* Candle glow: soft orange light at the bottom that pulses like a flame. */
+.fx-candle {
+  /* Only the lower third of the screen, so the glow sits low like a real candle. */
+  top: 66%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(249, 115, 22, 0.45), transparent 70%);
+  animation: candle-flicker 3.5s ease-in-out infinite;
+}
+@keyframes candle-flicker {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  45% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.75;
+  }
+}
+
+/* Bats and ghosts: small, soft, and floating across the screen. */
+.fx-flyer {
+  position: absolute;
+}
+.fx-bat {
+  /* Why: a dark silhouette with a soft light-purple glow stays visible on both
+     the dark sky and the lighter fog. */
+  color: #120a1f;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 3px rgba(167, 139, 250, 0.7));
+  /* Why: bats.js moves each bat every frame (transform) and flips it (scale);
+     hidden until then so nothing flashes in the corner. */
+  top: 0;
+  left: 0;
+  visibility: hidden;
+}
+/* Wings: each wing squashes up and down around its inner edge (next to the body). */
+.bat-wing {
+  transform-box: fill-box;
+  /* bats.js changes --bat-flap-time to match the flight speed. */
+  animation: bat-flap var(--bat-flap-time, 0.32s) ease-in-out infinite alternate;
+}
+.bat-wing-l {
+  transform-origin: 100% 60%;
+}
+.bat-wing-r {
+  transform-origin: 0% 60%;
+}
+@keyframes bat-flap {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.3);
+  }
+}
+/* Glowing orange eyes. */
+.bat-eye {
+  filter: drop-shadow(0 0 1px #f97316);
+}
+.fx-ghost {
+  color: #ede9fe;
+  opacity: 0.35;
+  animation: ghost-float 9s ease-in-out infinite alternate;
+}
+.fx-ghost-1 {
+  top: 30%;
+  right: 6%;
+}
+.fx-ghost-2 {
+  top: 75%;
+  left: 8%;
+  animation-delay: -4s;
+}
+@keyframes ghost-float {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-12px, -26px, 0);
+  }
+}
+
+/* Reduced motion (Req 15.15, 15.18): fog stays as a still background, the rest
+   stops or hides. The progress bar width change is kept on purpose, because it
+   shows real progress rather than decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .fx-fog,
+  .fx-candle {
+    animation: none;
+  }
+  .fx-flyers {
+    display: none;
+  }
+  .bat-wing {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Side panels: fixed in the empty space beside the centered content.
+   Hidden below 1280 px so phones and tablets stay clean. The main column is
+   48rem wide, so at 1280 px each side has 256 px: the panels are 224 px. */
+.side-panel {
+  display: none;
+}
+@media (min-width: 1280px) {
+  .side-panel:not([hidden]) {
+    display: block;
+    position: fixed;
+    top: 6rem;
+    bottom: 1rem;
+    width: 14rem;
+    overflow-y: auto;
+    z-index: 2; /* above the effects layers (z-index 1) so text stays readable */
+  }
+  .side-panel-left {
+    left: 0.75rem;
+  }
+  .side-panel-right {
+    right: 0.75rem;
+  }
+}
 /* A visible focus ring for keyboard users, in the orange accent. */
 :focus-visible {
   outline: 2px solid #f97316;

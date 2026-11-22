@@ -359,20 +359,20 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 5.1, 6.1, 16.8_
 
-- [ ] 13. Checkpoint - Live test with the real OpenAI API
+- [x] 13. Checkpoint - Live test with the real OpenAI API
   - Run `pytest` and make sure it passes.
   - Fill in your real `.env` (it is git-ignored). Run `python -m app.main` without `USE_FAKE_AGENTS`, and do one real summon in the browser with a pet photo and a wizard costume. Check the scene, the pet likeness, the progress steps, and that the quality value is accepted by the image model. If `quality` or `size` is rejected, update `docs/openai-findings.md`, `.env.example`, and the code, then repeat.
   - Try a non-pet photo (expect "not a pet") and an odd costume text (expect the costume message with chips). Check that the daily count only goes down after a returned image.
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. UI polish
-  - [ ] 14.1 Create the logo and favicon
+  - [x] 14.1 Create the logo and favicon
     - Design a ghost with a paw print as an inline SVG in the header (decorative, `aria-hidden="true"`, with the product name as visible text next to it) and use the same SVG, URL-encoded, as the favicon (`<link rel="icon" href="data:image/svg+xml,...">`). Use the same favicon in `404.html`.
     - Extend `tests/test_static_assets.py`: the favicon link exists in `index.html` and `404.html`, and no external image is referenced.
     - Rebuild `tailwind.css`. Manual check in the browser tab. `pytest` passes.
     - _Requirements: 15.16, 15.11, 15.18_
 
-  - [ ] 14.2 Add the fog, floating bats and ghosts, candle glow, and reduced-motion rules
+  - [x] 14.2 Add the fog, floating bats and ghosts, candle glow, and reduced-motion rules
     - In `styles.css` add: a fixed, `pointer-events: none` animated fog (two radial-gradient layers that drift), a few tiny inline-SVG bats and ghosts floating with CSS animation, and a pulsing candle glow. Create everything with CSS or inline SVG only.
     - Add `@media (prefers-reduced-motion: reduce)` that turns off the fog drift, bats and ghosts, candle flicker, the reveal, and other non-essential animations (fog becomes a static background and the result shows at once), while the progress bar width change stays.
     - Extend `tests/test_static_assets.py`: `styles.css` contains the `prefers-reduced-motion` block, `pointer-events: none` on the effects layers, and no external `url(` values.

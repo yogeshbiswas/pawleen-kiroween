@@ -300,3 +300,138 @@ def test_banner_js_uses_the_dismissal_key():
     js = (STATIC / "js" / "banner.js").read_text(encoding="utf-8")
     assert "pawleenBannerDismissed" in js
     assert "fetch(" not in js
+
+
+# ---- Part 8: logo and favicon (task 14.1) ----
+def test_favicon_link_is_inline_svg_in_both_pages():
+    for page in PAGES:
+        text = page.read_text(encoding="utf-8")
+        assert re.search(
+            r'<link rel="icon" href="data:image/svg\+xml,%3Csvg', text
+        ), page.name
+
+
+def test_both_pages_use_the_same_favicon():
+    hrefs = [
+        re.search(r'<link rel="icon" href="([^"]+)"', p.read_text(encoding="utf-8")).group(1)
+        for p in PAGES
+    ]
+    assert hrefs[0] == hrefs[1]
+
+
+def test_header_logo_is_decorative_svg_with_visible_name():
+    html = INDEX.read_text(encoding="utf-8")
+    logo = re.search(r'id="logo">(.*?)</a>', html, flags=re.S).group(1)
+    assert '<svg' in logo and 'aria-hidden="true"' in logo
+    assert "<span>Pawleen</span>" in logo
+
+
+def test_no_external_image_is_referenced():
+    for page in PAGES:
+        text = page.read_text(encoding="utf-8")
+        # Why: previews get their src from JS later, so only a present src is checked.
+        for src in re.findall(r"<img\b[^>]*\bsrc=\"([^\"]+)\"", text):
+            assert src.startswith(("/static/", "data:")), page.name
+        for href in re.findall(r'<link\b[^>]*rel="icon"[^>]*href="([^"]+)"', text):
+            assert href.startswith("data:image/svg+xml,"), page.name
+
+
+# ---- Part 9: fog, bats, ghosts, candle, reduced motion (task 14.2) ----
+def test_effects_layers_ignore_pointer_events_and_exist_in_html():
+    css = STYLES.read_text(encoding="utf-8")
+    base = re.search(r"\.fx-layer\s*\{(.*?)\}", css, flags=re.S).group(1)
+    assert "pointer-events: none" in base and "position: fixed" in base
+    html = INDEX.read_text(encoding="utf-8")
+    for cls in ("fx-fog", "fx-candle", "fx-flyers"):
+        assert f"fx-layer {cls}" in html
+    assert html.count("fx-bat ") >= 2 and html.count("fx-ghost ") >= 2
+
+
+def test_reduced_motion_block_stops_effects_and_keeps_progress_bar():
+    css = STYLES.read_text(encoding="utf-8")
+    assert "@media (prefers-reduced-motion: reduce)" in css
+    # Last reduced-motion block holds the effects rules.
+    block = css.split("@media (prefers-reduced-motion: reduce)")[-1]
+    assert ".fx-fog" in block and ".fx-candle" in block
+    assert ".fx-flyers" in block and "display: none" in block
+    assert "animation: none" in block
+    # Progress bar transition is only disabled in its own block, not here.
+    assert "progress-fill" not in block
+
+
+def test_styles_have_no_external_url_values():
+    css = STYLES.read_text(encoding="utf-8")
+    assert "http://" not in css and "https://" not in css
+    for url in re.findall(r"url\(\s*['\"]?([^'\")]+)", css):
+        assert url.startswith("/static/"), url
+
+# ---- Part 10: UI polish (bigger logo, more effects, side panels) ----
+def test_effects_counts_and_sizes():
+    html = INDEX.read_text(encoding="utf-8")
+    assert html.count("fx-bat ") >= 4 and html.count("fx-ghost ") >= 2
+    # Why: bats and ghosts must be 40-56 px wide.
+    flyers = re.findall(r'class="fx-flyer[^"]*"[^>]*\bwidth="(\d+)"', html)
+    assert len(flyers) >= 6
+    assert all(40 <= int(w) <= 56 for w in flyers)
+
+
+def test_logo_is_44px():
+    html = INDEX.read_text(encoding="utf-8")
+    assert "w-11 h-11" in re.search(r'id="logo">(.*?)</a>', html, flags=re.S).group(1)
+    assert ".w-11" in (STATIC / "css" / "tailwind.css").read_text(encoding="utf-8")
+
+
+def test_side_panels_exist_and_show_only_from_1280px():
+    html = INDEX.read_text(encoding="utf-8")
+    for text in ("Meet the 3 spirits", "Gatekeeper", "Costume Maker",
+                 "Quality Checker", "Haunted Hall of Fame", "examples.js"):
+        assert text in html
+    css = STYLES.read_text(encoding="utf-8")
+    assert re.search(r"\.side-panel\s*\{\s*display:\s*none", css)
+    media = css.split("@media (min-width: 1280px)")[1]
+    assert "display: block" in media
+
+
+def test_examples_js_handles_missing_files():
+    js = (STATIC / "js" / "examples.js").read_text(encoding="utf-8")
+    for n in (1, 2, 3):
+        assert f"example-{n}.png" in js
+    assert "onerror" in js and "panel.hidden" in js
+
+
+# ---- Part 11: living bats (bats.js) ----
+def test_bats_js_exists_loaded_and_respects_reduced_motion():
+    js_path = STATIC / "js" / "bats.js"
+    assert js_path.exists()
+    assert "/static/js/bats.js" in INDEX.read_text(encoding="utf-8")
+    js = js_path.read_text(encoding="utf-8")
+    # Why: the reduced-motion check must come before any animation starts.
+    check = js.index("prefers-reduced-motion")
+    assert check < js.index("requestAnimationFrame(")
+    assert "motionQuery.matches" in js
+
+
+def test_bats_have_wings_and_orange_eyes():
+    html = INDEX.read_text(encoding="utf-8")
+    assert html.count("bat-wing-l") == 4 and html.count("bat-wing-r") == 4
+    assert html.count('class="bat-eye"') == 8 and html.count("#f97316") >= 8
+    css = STYLES.read_text(encoding="utf-8")
+    assert "scaleY" in css and "@keyframes bat-flap" in css
+
+
+def test_bats_js_flies_waypoints_and_pauses_when_hidden():
+    js = (STATIC / "js" / "bats.js").read_text(encoding="utf-8")
+    assert "requestAnimationFrame" in js and "visibilitychange" in js
+    assert "cancelAnimationFrame" in js and "document.hidden" in js
+    assert "--bat-flap-time" in js
+    assert "bat-flap-time" in STYLES.read_text(encoding="utf-8")
+
+
+def test_bats_start_and_end_off_screen_and_avoid_bottom_15_percent():
+    js = (STATIC / "js" / "bats.js").read_text(encoding="utf-8")
+    # Start/end waypoints are beyond the edge by the bat's width plus a margin.
+    assert "-size - EDGE_MARGIN" in js and "window.innerWidth + EDGE_MARGIN" in js
+    # Bat is placed at its off-screen start before it is shown.
+    assert js.index("el.style.transform") < js.index('el.style.visibility = "visible"')
+    # Whole bat stays above the bottom 15%.
+    assert "h * 0.85 - batHeight" in js

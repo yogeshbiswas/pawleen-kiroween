@@ -6,15 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07040d">
   <title>Pawleen | Haunted Pet Photo Booth</title>
+  <!-- Why: inline data-URI favicon, so no extra request or external file. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http%3A//www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cpath%20d='M12%2056V30C12%2016%2021%208%2032%208s20%208%2020%2022v26l-6-5-7%205-7-5-7%205-6-5z'%20fill='%23e9e4f5'/%3E%3Ccircle%20cx='25'%20cy='20'%20r='2.5'%20fill='%2307040d'/%3E%3Ccircle%20cx='39'%20cy='20'%20r='2.5'%20fill='%2307040d'/%3E%3Cellipse%20cx='32'%20cy='42'%20rx='7'%20ry='5.5'%20fill='%23f97316'/%3E%3Ccircle%20cx='23'%20cy='34'%20r='3'%20fill='%23f97316'/%3E%3Ccircle%20cx='28.5'%20cy='29'%20r='3'%20fill='%23f97316'/%3E%3Ccircle%20cx='35.5'%20cy='29'%20r='3'%20fill='%23f97316'/%3E%3Ccircle%20cx='41'%20cy='34'%20r='3'%20fill='%23f97316'/%3E%3C/svg%3E">
   <!-- tailwind.css first, then styles.css, so our own rules can override it. -->
   <link rel="stylesheet" href="/static/css/tailwind.css">
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body class="min-h-screen flex flex-col bg-night text-violet-100 font-body">
 
+  <!-- Spooky effects: decorative only, clicks pass through (see styles.css). -->
+  <div class="fx-layer fx-fog" aria-hidden="true"></div>
+  <div class="fx-layer fx-candle" aria-hidden="true"></div>
+  <div class="fx-layer fx-flyers" aria-hidden="true">
+    <svg class="fx-flyer fx-bat fx-bat-1" viewBox="0 0 32 16" width="48" height="24"><g class="bat-wing bat-wing-l"><path fill="currentColor" d="M14 7C10 2 4 1 0 3c2 2 2 4 1 6 3-1 5 0 6 2 2-2 5-1 7 0z"/></g><g class="bat-wing bat-wing-r"><path fill="currentColor" d="M18 7c4-5 10-6 14-4-2 2-2 4-1 6-3-1-5 0-6 2-2-2-5-1-7 0z"/></g><path fill="currentColor" d="M14 5l.6-2.5.9 2.1h1l.9-2.1L18 5c.6 3-.5 7-2 8-1.5-1-2.6-5-2-8z"/><circle class="bat-eye" cx="15" cy="6.4" r="0.9" fill="#f97316"/><circle class="bat-eye" cx="17" cy="6.4" r="0.9" fill="#f97316"/></svg>
+    <svg class="fx-flyer fx-bat fx-bat-2" viewBox="0 0 32 16" width="40" height="20"><g class="bat-wing bat-wing-l"><path fill="currentColor" d="M14 7C10 2 4 1 0 3c2 2 2 4 1 6 3-1 5 0 6 2 2-2 5-1 7 0z"/></g><g class="bat-wing bat-wing-r"><path fill="currentColor" d="M18 7c4-5 10-6 14-4-2 2-2 4-1 6-3-1-5 0-6 2-2-2-5-1-7 0z"/></g><path fill="currentColor" d="M14 5l.6-2.5.9 2.1h1l.9-2.1L18 5c.6 3-.5 7-2 8-1.5-1-2.6-5-2-8z"/><circle class="bat-eye" cx="15" cy="6.4" r="0.9" fill="#f97316"/><circle class="bat-eye" cx="17" cy="6.4" r="0.9" fill="#f97316"/></svg>
+    <svg class="fx-flyer fx-bat fx-bat-3" viewBox="0 0 32 16" width="56" height="28"><g class="bat-wing bat-wing-l"><path fill="currentColor" d="M14 7C10 2 4 1 0 3c2 2 2 4 1 6 3-1 5 0 6 2 2-2 5-1 7 0z"/></g><g class="bat-wing bat-wing-r"><path fill="currentColor" d="M18 7c4-5 10-6 14-4-2 2-2 4-1 6-3-1-5 0-6 2-2-2-5-1-7 0z"/></g><path fill="currentColor" d="M14 5l.6-2.5.9 2.1h1l.9-2.1L18 5c.6 3-.5 7-2 8-1.5-1-2.6-5-2-8z"/><circle class="bat-eye" cx="15" cy="6.4" r="0.9" fill="#f97316"/><circle class="bat-eye" cx="17" cy="6.4" r="0.9" fill="#f97316"/></svg>
+    <svg class="fx-flyer fx-bat fx-bat-4" viewBox="0 0 32 16" width="44" height="22"><g class="bat-wing bat-wing-l"><path fill="currentColor" d="M14 7C10 2 4 1 0 3c2 2 2 4 1 6 3-1 5 0 6 2 2-2 5-1 7 0z"/></g><g class="bat-wing bat-wing-r"><path fill="currentColor" d="M18 7c4-5 10-6 14-4-2 2-2 4-1 6-3-1-5 0-6 2-2-2-5-1-7 0z"/></g><path fill="currentColor" d="M14 5l.6-2.5.9 2.1h1l.9-2.1L18 5c.6 3-.5 7-2 8-1.5-1-2.6-5-2-8z"/><circle class="bat-eye" cx="15" cy="6.4" r="0.9" fill="#f97316"/><circle class="bat-eye" cx="17" cy="6.4" r="0.9" fill="#f97316"/></svg>
+    <svg class="fx-flyer fx-ghost fx-ghost-1" viewBox="0 0 20 24" width="46" height="55"><path fill="currentColor" d="M10 1C5 1 2 5 2 10v13l3-3 2.5 3L10 20l2.5 3L15 20l3 3V10c0-5-3-9-8-9z"/><circle cx="7" cy="10" r="1.6" fill="#07040d"/><circle cx="13" cy="10" r="1.6" fill="#07040d"/></svg>
+    <svg class="fx-flyer fx-ghost fx-ghost-2" viewBox="0 0 20 24" width="40" height="48"><path fill="currentColor" d="M10 1C5 1 2 5 2 10v13l3-3 2.5 3L10 20l2.5 3L15 20l3 3V10c0-5-3-9-8-9z"/><circle cx="7" cy="10" r="1.6" fill="#07040d"/><circle cx="13" cy="10" r="1.6" fill="#07040d"/></svg>
+  </div>
+  <!-- Side panels: only shown from 1280 px up (see styles.css), hidden on phones. -->
+  <aside id="spirits-panel" class="side-panel side-panel-left" aria-labelledby="spirits-title">
+    <h2 id="spirits-title" class="text-xl text-pumpkin">Meet the 3 spirits</h2>
+    <ul class="mt-2 flex flex-col gap-2">
+      <li class="rounded-lg border border-witch/40 bg-black/40 p-2 text-sm"><p class="font-bold text-witch-light">🔮 Gatekeeper</p><p>Checks it is a real pet.</p></li>
+      <li class="rounded-lg border border-witch/40 bg-black/40 p-2 text-sm"><p class="font-bold text-witch-light">🧪 Costume Maker</p><p>Brews the costume and the spooky scene.</p></li>
+      <li class="rounded-lg border border-witch/40 bg-black/40 p-2 text-sm"><p class="font-bold text-witch-light">🔍 Quality Checker</p><p>Makes sure the pet is the same and nothing is cropped.</p></li>
+    </ul>
+  </aside>
+  <!-- Hall of Fame: examples.js fills it from /static/examples/ and keeps it hidden if no file exists. -->
+  <aside id="hall-panel" class="side-panel side-panel-right" aria-labelledby="hall-title" hidden>
+    <h2 id="hall-title" class="text-xl text-pumpkin">Haunted Hall of Fame</h2>
+    <ul id="hall-list" class="mt-2 flex flex-col gap-2"></ul>
+  </aside>
   <header class="flex flex-wrap items-center justify-between gap-2 px-3 py-3 border-b border-witch/40">
-    <!-- Logo placeholder; the real logo comes in the polish tasks. -->
-    <a href="/" class="font-display text-2xl text-pumpkin" id="logo">🎃 Pawleen</a>
+    <!-- Logo: decorative ghost with a paw print; the name stays as visible text. -->
+    <a href="/" class="inline-flex items-center gap-2 font-display text-2xl text-pumpkin" id="logo">
+      <svg class="w-11 h-11 shrink-0" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M12 56V30C12 16 21 8 32 8s20 8 20 22v26l-6-5-7 5-7-5-7 5-6-5z" fill="#e9e4f5"/><circle cx="25" cy="20" r="2.5" fill="#07040d"/><circle cx="39" cy="20" r="2.5" fill="#07040d"/><ellipse cx="32" cy="42" rx="7" ry="5.5" fill="#f97316"/><circle cx="23" cy="34" r="3" fill="#f97316"/><circle cx="28.5" cy="29" r="3" fill="#f97316"/><circle cx="35.5" cy="29" r="3" fill="#f97316"/><circle cx="41" cy="34" r="3" fill="#f97316"/></svg>
+      <span>Pawleen</span>
+    </a>
     <nav class="flex items-center gap-2">
       <button type="button" id="nav-toggle"
         class="min-h-11 px-3 rounded-lg border border-witch text-witch-light hover:bg-witch/20 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -283,5 +313,7 @@
 
   <script type="module" src="/static/js/banner.js"></script>
   <script type="module" src="/static/js/main.js"></script>
+  <script type="module" src="/static/js/examples.js"></script>
+  <script type="module" src="/static/js/bats.js"></script>
 </body>
 </html>
