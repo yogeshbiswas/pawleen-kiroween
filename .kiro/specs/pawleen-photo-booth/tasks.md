@@ -229,7 +229,7 @@ Conventions for every task:
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Frontend skeleton working end to end with fake agents
-  - [ ] 8.1 Set up the Tailwind build with pytailwindcss
+  - [x] 8.1 Set up the Tailwind build with pytailwindcss
     - Create `tailwind.config.js` (content paths, `night`, `witch`, `pumpkin` colors, `display` and `body` font families), `tailwind/input.css` (`@import "tailwindcss"; @config; @source` lines) as in the design, and run `tailwindcss -i tailwind/input.css -o static/css/tailwind.css --minify`. Commit the generated file. Note the exact `pytailwindcss` / Tailwind version used in `docs/openai-findings.md`'s sibling file `docs/build-notes.md` (and the `TAILWINDCSS_VERSION` value).
     - Add `tests/test_static_assets.py` (first part): `static/css/tailwind.css` exists and is not empty; `tailwind.config.js` and `tailwind/input.css` exist; `requirements.txt` does not list `pytailwindcss` while `requirements-dev.txt` does.
     - `pytest` passes.
