@@ -485,6 +485,18 @@
         "chatSessionId": "sess_56d013fa-11c1-4dd2-a198-a8fccb15c4af",
         "timestamp": 1795381862069
       }
+    ],
+    "12.1 Implement `app/openai_client.py` with tests (mocked SDK)": [
+      {
+        "executionId": "2bf6d2e9-58f6-44a3-9c79-3c83957e5289",
+        "chatSessionId": "sess_930512bf-15cc-45bf-a5b2-9ece04734a4c",
+        "timestamp": 1795383088378
+      },
+      {
+        "executionId": "2bf6d2e9-58f6-44a3-9c79-3c83957e5289",
+        "chatSessionId": "sess_930512bf-15cc-45bf-a5b2-9ece04734a4c",
+        "timestamp": 1795383181797
+      }
     ]
   }
 }

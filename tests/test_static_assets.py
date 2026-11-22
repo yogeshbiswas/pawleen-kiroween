@@ -288,7 +288,7 @@ def test_privacy_banner_text_and_footer_are_in_index():
         "processed by OpenAI",
         "not stored on our servers",
         "gallery is stored only in this browser",
-        "anonymous Browser_ID cookie counts your daily spells",
+        "anonymous cookie counts your daily spells",
         'id="privacy-banner"',
         'id="privacy-banner-dismiss"',
         FOOTER_TEXT,
