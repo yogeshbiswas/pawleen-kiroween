@@ -279,3 +279,24 @@ def test_gallery_code_does_not_send_images_to_backend():
     js = (STATIC / "js" / "main.js").read_text(encoding="utf-8")
     start = js.index("Haunted_Gallery view")
     assert "fetch(" not in js[start:] and "summon(" not in js[start:]
+
+
+# ---- Part 7: Privacy_Banner (task 10.3) ----
+def test_privacy_banner_text_and_footer_are_in_index():
+    html = INDEX.read_text(encoding="utf-8")
+    for text in (
+        "processed by OpenAI",
+        "not stored on our servers",
+        "gallery is stored only in this browser",
+        "anonymous Browser_ID cookie counts your daily spells",
+        'id="privacy-banner"',
+        'id="privacy-banner-dismiss"',
+        FOOTER_TEXT,
+    ):
+        assert text in html
+
+
+def test_banner_js_uses_the_dismissal_key():
+    js = (STATIC / "js" / "banner.js").read_text(encoding="utf-8")
+    assert "pawleenBannerDismissed" in js
+    assert "fetch(" not in js

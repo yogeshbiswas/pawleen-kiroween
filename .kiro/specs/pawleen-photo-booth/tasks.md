@@ -296,7 +296,7 @@ Conventions for every task:
     - Rebuild `tailwind.css`. Manual check with `JUDGE_PASS` set in `.env`, including a wrong pass 5 times. `pytest` passes.
     - _Requirements: 10.8, 10.9, 10.10, 11.3, 11.4, 11.5, 11.9, 11.10, 11.11, 11.12, 11.14_
 
-  - [ ] 10.3 Add the Privacy_Banner
+  - [x] 10.3 Add the Privacy_Banner
     - Show a dismissible banner on the first visit that says photos are processed by OpenAI, photos are not stored on the servers, the gallery is stored only in the browser, and an anonymous Browser_ID cookie counts daily spells. Dismissal is saved in `localStorage.pawleenBannerDismissed` and the banner stays hidden on later visits.
     - Extend `tests/test_static_assets.py` to check the banner text and the footer text are in `index.html`.
     - Rebuild `tailwind.css`. Manual check: banner shows, dismiss, reload. `pytest` passes.

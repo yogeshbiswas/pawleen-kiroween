@@ -28,6 +28,22 @@
     </nav>
   </header>
 
+  <!-- Privacy_Banner: hidden until banner.js decides this is a first visit. -->
+  <aside id="privacy-banner" aria-labelledby="privacy-banner-title" hidden
+    class="mx-3 mt-3 rounded-xl border border-pumpkin/60 bg-black/50 p-3 text-sm">
+    <p id="privacy-banner-title" class="font-bold text-pumpkin">🕯️ A few spooky promises</p>
+    <ul class="mt-2 list-disc pl-5 space-y-1 break-words">
+      <li>Your photos are processed by OpenAI to make your costume.</li>
+      <li>Your photos are not stored on our servers.</li>
+      <li>Your gallery is stored only in this browser.</li>
+      <li>An anonymous cookie counts your daily spells.</li>
+    </ul>
+    <button type="button" id="privacy-banner-dismiss"
+      class="mt-3 min-h-11 w-full rounded-lg border border-pumpkin px-4 text-pumpkin hover:bg-pumpkin/20 min-[400px]:w-auto">
+      Got it
+    </button>
+  </aside>
+
   <main class="flex-1 w-full max-w-3xl mx-auto px-3 py-4">
     <!-- Shown on any screen if the gallery cannot be read at page load (Req 9.16). -->
     <p id="gallery-load-error" class="mb-3 text-sm text-orange-300" role="alert" hidden></p>
@@ -265,6 +281,7 @@
     <p id="privacy-note">🔒 Your photos are only used to create your costume (processed by OpenAI) and are never stored on our servers. Your gallery stays in your browser.</p>
   </footer>
 
+  <script type="module" src="/static/js/banner.js"></script>
   <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>
