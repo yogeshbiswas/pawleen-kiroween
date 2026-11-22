@@ -365,7 +365,7 @@ Conventions for every task:
   - Try a non-pet photo (expect "not a pet") and an odd costume text (expect the costume message with chips). Check that the daily count only goes down after a returned image.
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 14. UI polish
+- [x] 14. UI polish
   - [x] 14.1 Create the logo and favicon
     - Design a ghost with a paw print as an inline SVG in the header (decorative, `aria-hidden="true"`, with the product name as visible text next to it) and use the same SVG, URL-encoded, as the favicon (`<link rel="icon" href="data:image/svg+xml,...">`). Use the same favicon in `404.html`.
     - Extend `tests/test_static_assets.py`: the favicon link exists in `index.html` and `404.html`, and no external image is referenced.
@@ -386,7 +386,7 @@ Conventions for every task:
     - Rebuild `tailwind.css`. Manual check by keyboard only. `pytest` passes.
     - _Requirements: 15.1, 15.2, 15.4, 15.6, 15.7, 15.11, 15.12, 15.14, 14.3_
 
-  - [ ] 14.4 Rebuild the CSS and run the static checks
+  - [x] 14.4 Rebuild the CSS and run the static checks
     - Run the Tailwind build command one last time, commit `static/css/tailwind.css`, and make sure the README build note (task 16.2) matches the command used.
     - Add a test in `tests/test_static_assets.py` that every Tailwind-style class used for the main layout in `index.html` (a short fixed list you choose) appears in `tailwind.css`, to catch a forgotten rebuild.
     - `pytest` passes.

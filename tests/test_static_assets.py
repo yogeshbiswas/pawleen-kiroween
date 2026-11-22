@@ -511,3 +511,35 @@ def test_404_page_uses_the_same_theme():
     assert "/static/css/styles.css" in html
     assert "#07040d" in html and "glow-btn" in html
     assert 'aria-hidden="true"' in html and "buried" in html
+
+
+# ---- Part 13: Tailwind rebuild check (task 14.4) ----
+LAYOUT_CLASSES = [
+    "min-h-screen",
+    "flex-col",
+    "flex-1",
+    "max-w-3xl",
+    "mx-auto",
+    "gap-6",
+    "bg-night",
+    "text-pumpkin",
+    "border-witch/40",  # slash is escaped in the CSS
+    "hover:bg-witch/20",  # colon and slash are escaped
+    "min-[400px]:w-auto",  # brackets and colon are escaped
+]
+
+
+def _css_selector(class_name: str) -> str:
+    """Build the selector Tailwind writes, e.g. 'sm:flex' -> '.sm\\:flex'."""
+    return "." + re.sub(r"([^a-zA-Z0-9_-])", r"\\\1", class_name)
+
+
+def test_layout_classes_are_used_in_index_and_built_into_tailwind_css():
+    # Why: a class in index.html but missing from tailwind.css means a forgotten rebuild.
+    html = INDEX.read_text(encoding="utf-8")
+    css = (STATIC / "css" / "tailwind.css").read_text(encoding="utf-8")
+    for name in LAYOUT_CLASSES:
+        assert re.search(rf'class="[^"]*(?<![\w:/\[-]){re.escape(name)}(?![\w/\]-])', html), (
+            f"{name} not used in index.html"
+        )
+        assert _css_selector(name) in css, f"{name} missing: rebuild tailwind.css"
