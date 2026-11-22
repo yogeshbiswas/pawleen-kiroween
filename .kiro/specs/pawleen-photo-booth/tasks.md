@@ -242,7 +242,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 15.5, 15.19, 16.9_
 
-  - [ ] 8.3 Build the page skeleton: screens, top bar, footer, and base styles
+  - [x] 8.3 Build the page skeleton: screens, top bar, footer, and base styles
     - Replace the placeholder `static/index.html` with the real page: `<link>` tags for `tailwind.css` then `styles.css`, a top bar (logo placeholder text, Booth/Gallery nav button, Sound toggle placeholder), five `<section>` screens (`booth`, `progress`, `result`, `gallery`, `error`), and the privacy footer line "🔒 Your photos are only used to create your costume (processed by OpenAI) and are never stored on our servers. Your gallery stays in your browser." on every screen. Use a dark `#07040d` background, purple and orange accents, and mobile-first layout.
     - Create `static/js/main.js` (module) with the `state` object and `showScreen(name)`, and `static/js/messages.js` with the frontend-only spooky text (file type, unreadable file, description trimmed, darkroom, small photo, one-pet tip).
     - Rebuild `tailwind.css` with the build command.

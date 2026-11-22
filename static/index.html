@@ -2,12 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <!-- Why: width=device-width makes the layout work from 320 px phones upward. -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pawleen</title>
+  <meta name="theme-color" content="#07040d">
+  <title>Pawleen | Haunted Pet Photo Booth</title>
+  <!-- tailwind.css first, then styles.css, so our own rules can override it. -->
+  <link rel="stylesheet" href="/static/css/tailwind.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body>
-  <main>
-    <h1>Pawleen is waking up</h1>
+<body class="min-h-screen flex flex-col bg-night text-violet-100 font-body">
+
+  <header class="flex flex-wrap items-center justify-between gap-2 px-3 py-3 border-b border-witch/40">
+    <!-- Logo placeholder; the real logo comes in the polish tasks. -->
+    <a href="/" class="font-display text-2xl text-pumpkin" id="logo">🎃 Pawleen</a>
+    <nav class="flex items-center gap-2">
+      <button type="button" id="nav-toggle"
+        class="min-h-11 px-3 rounded-lg border border-witch text-witch-light hover:bg-witch/20">
+        🖼️ Gallery
+      </button>
+      <!-- Sound toggle placeholder; wired up in the polish tasks. -->
+      <button type="button" id="sound-toggle" aria-pressed="false" aria-label="Sound off"
+        class="min-h-11 min-w-11 px-3 rounded-lg border border-witch text-witch-light hover:bg-witch/20">
+        🔇
+      </button>
+    </nav>
+  </header>
+
+  <main class="flex-1 w-full max-w-3xl mx-auto px-3 py-4">
+    <section id="screen-booth" data-screen="booth" aria-labelledby="booth-title">
+      <h1 id="booth-title" class="text-3xl text-pumpkin">Pawleen's Photo Booth</h1>
+      <p class="mt-2">Upload your pet and pick a costume. The booth does the rest.</p>
+    </section>
+
+    <section id="screen-progress" data-screen="progress" aria-labelledby="progress-title" hidden>
+      <h2 id="progress-title" class="text-2xl text-pumpkin">The spirits are working...</h2>
+    </section>
+
+    <section id="screen-result" data-screen="result" aria-labelledby="result-title" hidden>
+      <h2 id="result-title" class="text-2xl text-pumpkin">Your spooky pet is ready!</h2>
+    </section>
+
+    <section id="screen-gallery" data-screen="gallery" aria-labelledby="gallery-title" hidden>
+      <h2 id="gallery-title" class="text-2xl text-pumpkin">Haunted Gallery</h2>
+    </section>
+
+    <section id="screen-error" data-screen="error" aria-labelledby="error-title" hidden>
+      <h2 id="error-title" class="text-2xl text-pumpkin">Something went bump</h2>
+    </section>
   </main>
+
+  <!-- One shared footer sits outside the sections, so it shows on every screen. -->
+  <footer class="px-3 py-4 text-center text-sm text-witch-light border-t border-witch/40">
+    <p id="privacy-note">🔒 Your photos are only used to create your costume (processed by OpenAI) and are never stored on our servers. Your gallery stays in your browser.</p>
+  </footer>
+
+  <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

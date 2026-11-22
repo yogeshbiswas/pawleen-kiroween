@@ -31,14 +31,14 @@ def test_health_ok_and_fast(client):
 def test_index_served(client):
     r = client.get("/")
     assert r.status_code == 200
-    assert "Pawleen is waking up" in r.text
+    assert "Photo Booth" in r.text
 
 
 def test_unknown_path_is_buried_page(client):
     r = client.get("/nowhere")
     assert r.status_code == 404
     assert "This page has been buried" in r.text
-    assert "Pawleen is waking up" not in r.text
+    assert "Photo Booth" not in r.text
     assert 'href="/"' in r.text
 
 

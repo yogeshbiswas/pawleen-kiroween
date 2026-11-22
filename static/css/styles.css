@@ -29,3 +29,19 @@ h3 {
   font-family: "Creepster", serif;
   font-weight: 400;
 }
+
+/* Base page styles. Mobile first: nothing here needs more than 320 px. */
+html {
+  background: #07040d; /* same as the night color, avoids a white flash on load */
+  color-scheme: dark;
+}
+
+body {
+  overflow-x: hidden; /* Why: stops any wide child from causing sideways scroll on phones */
+}
+
+/* A visible focus ring for keyboard users, in the orange accent. */
+:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}

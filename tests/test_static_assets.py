@@ -101,3 +101,69 @@ def test_no_cdn_or_font_service_reference_in_static_text_files():
         text = path.read_text(encoding="utf-8").lower()
         for host in banned:
             assert host not in text, f"{host} found in {path.name}"
+
+
+# ---- Part 3: page skeleton (task 8.3) ----
+from fastapi.testclient import TestClient
+
+from app.main import create_app
+from tests.conftest import test_settings as make_settings
+
+FOOTER_TEXT = (
+    "🔒 Your photos are only used to create your costume (processed by OpenAI) "
+    "and are never stored on our servers. Your gallery stays in your browser."
+)
+PAGES = [STATIC / "index.html", STATIC / "404.html"]
+
+
+def test_pages_have_no_external_urls():
+    for page in PAGES:
+        text = page.read_text(encoding="utf-8")
+        # Why: any http(s) URL would be a request to another origin.
+        assert not re.search(r"https?://", text), page.name
+        assert "//cdn" not in text and "tailwindcss.com" not in text, page.name
+
+
+def test_pages_have_no_external_script_or_image():
+    for page in PAGES:
+        text = page.read_text(encoding="utf-8")
+        for src in re.findall(r"<(?:script|img)\b[^>]*\bsrc=[\"']([^\"']+)", text):
+            assert src.startswith("/static/"), f"{page.name}: {src}"
+
+
+def test_index_links_stylesheets_in_order_and_has_five_screens():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    assert html.index("tailwind.css") < html.index("styles.css")
+    for name in ("booth", "progress", "result", "gallery", "error"):
+        assert f'data-screen="{name}"' in html
+    assert 'type="module"' in html
+
+
+def test_index_has_privacy_footer():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    assert FOOTER_TEXT in html
+
+
+def test_messages_js_has_exact_texts():
+    js = (STATIC / "js" / "messages.js").read_text(encoding="utf-8")
+    for text in (
+        "The spirits can only read photos 📸 Please choose a JPG, PNG or WebP image.",
+        "🕯️ Developing your photo in the darkroom...",
+        "Small photo, the result may be a bit blurry 🌙",
+        "Works best with one pet per photo 🐾",
+    ):
+        assert text in js
+
+
+def test_main_js_exposes_show_screen():
+    js = (STATIC / "js" / "main.js").read_text(encoding="utf-8")
+    assert "window.showScreen" in js
+
+
+def test_page_loads_from_root_route(monkeypatch):
+    monkeypatch.delenv("USE_FAKE_AGENTS", raising=False)
+    client = TestClient(create_app(make_settings()))
+    r = client.get("/")
+    assert r.status_code == 200
+    assert FOOTER_TEXT in r.text
+    assert client.get("/static/js/main.js").status_code == 200
