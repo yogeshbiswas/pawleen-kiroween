@@ -250,7 +250,7 @@ Conventions for every task:
     - Manual check: the page opens, the screens switch from the browser console with `showScreen('result')`. `pytest` passes.
     - _Requirements: 14.9, 15.1, 15.2, 15.9, 15.10, 15.18, 16.7, 16.9_
 
-  - [ ] 8.4 Implement image preparation (`static/js/image-prep.js`)
+  - [x] 8.4 Implement image preparation (`static/js/image-prep.js`)
     - Export `prepareImage(file)` returning `{ blob, width, height, small }` and throwing `PrepError('type'|'unreadable')`: check type (JPEG, PNG, WebP) and size greater than 0, decode with `createImageBitmap(file, { imageOrientation: 'from-image' })`, always re-encode through a canvas to at most 2048 px on the longest side as JPEG at quality 0.9 (then 0.8, 0.7 if still 10 MB or more, then fail as `unreadable`), and set `small` when the shorter side is below 512.
     - Keep pure helpers (size calculation) as small exported functions with comments describing the expected values, so they can be checked in the console.
     - Manual check list (put it as a comment block at the top of the file): rotated phone photo shows upright, a 12 MP photo ends under 10 MB and 2048 px, a `.txt` file renamed to `.jpg` fails as `unreadable`, a 0-byte file fails.

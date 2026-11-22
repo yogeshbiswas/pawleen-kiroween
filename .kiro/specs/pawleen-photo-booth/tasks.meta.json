@@ -351,6 +351,18 @@
         "chatSessionId": "sess_0fddaebf-dcfc-4224-a7f4-e84ab2064150",
         "timestamp": 1795374007475
       }
+    ],
+    "8.4 Implement image preparation (`static/js/image-prep.js`)": [
+      {
+        "executionId": "604331db-09c6-4634-8bb4-1c5944688a41",
+        "chatSessionId": "sess_9757d548-7bf8-4664-a63f-e30185f15744",
+        "timestamp": 1795374118562
+      },
+      {
+        "executionId": "604331db-09c6-4634-8bb4-1c5944688a41",
+        "chatSessionId": "sess_9757d548-7bf8-4664-a63f-e30185f15744",
+        "timestamp": 1795374183774
+      }
     ]
   }
 }
