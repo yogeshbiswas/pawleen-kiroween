@@ -5,20 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Page buried | Pawleen</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http%3A//www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cpath%20d='M12%2056V30C12%2016%2021%208%2032%208s20%208%2020%2022v26l-6-5-7%205-7-5-7%205-6-5z'%20fill='%23e9e4f5'/%3E%3Ccircle%20cx='25'%20cy='20'%20r='2.5'%20fill='%2307040d'/%3E%3Ccircle%20cx='39'%20cy='20'%20r='2.5'%20fill='%2307040d'/%3E%3Cellipse%20cx='32'%20cy='42'%20rx='7'%20ry='5.5'%20fill='%23f97316'/%3E%3Ccircle%20cx='23'%20cy='34'%20r='3'%20fill='%23f97316'/%3E%3Ccircle%20cx='28.5'%20cy='29'%20r='3'%20fill='%23f97316'/%3E%3Ccircle%20cx='35.5'%20cy='29'%20r='3'%20fill='%23f97316'/%3E%3Ccircle%20cx='41'%20cy='34'%20r='3'%20fill='%23f97316'/%3E%3C/svg%3E">
+  <!-- Same theme as the booth: shared fonts, fog and focus ring come from styles.css. -->
+  <link rel="stylesheet" href="/static/css/styles.css">
   <style>
     body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-           background: #07040d; color: #e9e4f5; font-family: system-ui, sans-serif; text-align: center; }
-    main { padding: 2rem; }
-    h1 { font-size: 1.75rem; }
-    a { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem;
-        background: #f97316; color: #07040d; font-weight: 600; text-decoration: none; }
+           background: #07040d; color: #ede9fe; font-family: "Inter", system-ui, sans-serif; text-align: center; }
+    main { position: relative; z-index: 2; padding: 2rem; max-width: 32rem; }
+    h1 { font-size: 2rem; color: #f97316; }
+    .back { display: inline-flex; align-items: center; justify-content: center; margin-top: 1rem;
+            min-height: 44px; min-width: 44px; padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+            background: #f97316; color: #07040d; font-weight: 700; text-decoration: none; }
   </style>
 </head>
 <body>
+  <div class="fx-layer fx-fog" aria-hidden="true"></div>
+  <div class="fx-layer fx-candle" aria-hidden="true"></div>
   <main>
+    <!-- Decorative ghost with a paw print; the text below carries the meaning. -->
+    <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M12 56V30C12 16 21 8 32 8s20 8 20 22v26l-6-5-7 5-7-5-7 5-6-5z" fill="#e9e4f5"/><circle cx="25" cy="20" r="2.5" fill="#07040d"/><circle cx="39" cy="20" r="2.5" fill="#07040d"/><ellipse cx="32" cy="42" rx="7" ry="5.5" fill="#f97316"/><circle cx="23" cy="34" r="3" fill="#f97316"/><circle cx="28.5" cy="29" r="3" fill="#f97316"/><circle cx="35.5" cy="29" r="3" fill="#f97316"/><circle cx="41" cy="34" r="3" fill="#f97316"/></svg>
     <h1>🪦 This page has been buried...</h1>
-    <p>Nothing but cobwebs here.</p>
-    <a href="/">Back to the booth</a>
+    <p>Nothing but cobwebs here. Use the button to go back to the booth.</p>
+    <a href="/" class="back glow-btn">Back to the booth</a>
   </main>
-</body>
-</html>
+</body></html>

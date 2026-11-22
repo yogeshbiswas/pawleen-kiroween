@@ -379,7 +379,7 @@ Conventions for every task:
     - Manual check: effects visible, clicks pass through, then turn on "reduce motion" in the OS or devtools rendering panel and confirm they stop. `pytest` passes.
     - _Requirements: 15.3, 15.8, 15.15, 15.18_
 
-  - [ ] 14.3 Style the portal, cauldron, glowing buttons, accessibility, and 404 page
+  - [x] 14.3 Style the portal, cauldron, glowing buttons, accessibility, and 404 page
     - Style the pet upload as a glowing portal (oval with a conic-gradient swirl border) and the costume area as a bubbling cauldron (pot shape with CSS bubbles). Give every primary button a colored glow in default, hover, and `:focus-visible` states. Under 768 px give every control at least 44 x 44 px.
     - Check contrast (4.5:1 body text, 3:1 large text, borders, and focus rings), add `alt` text to every meaningful image and `aria-hidden` to decorative ones, keep a logical tab order and visible focus indicators, and check that dialogs trap and return focus. Apply the same theme to `404.html`.
     - Extend `tests/test_static_assets.py`: every `<img>` in `static/*.html` has an `alt` attribute, the page background color's luminance is at most 0.05 (computed in the test), and the `:focus-visible` rule exists.

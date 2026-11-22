@@ -177,7 +177,10 @@ def test_booth_form_texts_and_chips_are_present():
     html = INDEX.read_text(encoding="utf-8")
     for text in (
         "Works best with one pet per photo 🐾",
-        "Using a costume photo? Add details here ✨",
+        "Pick your costume: upload a photo, describe it, or both ✨",
+        "Upload a costume photo",
+        "Describe the costume",
+        "Tip: with a photo, add extra details like colours or accessories",
         "Summon Costume",
         "0 / 200",
         "Wizard with purple hat",
@@ -435,3 +438,76 @@ def test_bats_start_and_end_off_screen_and_avoid_bottom_15_percent():
     assert js.index("el.style.transform") < js.index('el.style.visibility = "visible"')
     # Whole bat stays above the bottom 15%.
     assert "h * 0.85 - batHeight" in js
+
+
+# ---- Part 12: portal, cauldron, glow, accessibility, 404 theme (task 14.3) ----
+def _luminance(hex_color: str) -> float:
+    """WCAG relative luminance of a #rrggbb color."""
+    h = hex_color.lstrip("#")
+    channels = []
+    for i in (0, 2, 4):
+        c = int(h[i : i + 2], 16) / 255
+        channels.append(c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4)
+    r, g, b = channels
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def _contrast(fg: str, bg: str) -> float:
+    hi, lo = sorted((_luminance(fg), _luminance(bg)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def test_every_img_in_static_html_has_alt():
+    for page in STATIC.glob("*.html"):
+        for tag in re.findall(r"<img\b[^>]*>", page.read_text(encoding="utf-8")):
+            assert re.search(r"\balt=", tag), f"{page.name}: {tag}"
+
+
+def test_page_background_is_dark():
+    css = STYLES.read_text(encoding="utf-8")
+    color = re.search(r"html\s*\{[^}]*background:\s*(#[0-9a-fA-F]{6})", css).group(1)
+    assert _luminance(color) <= 0.05
+
+
+def test_focus_visible_rule_exists():
+    css = STYLES.read_text(encoding="utf-8")
+    assert re.search(r":focus-visible\s*\{[^}]*outline:", css)
+    assert ".glow-btn:focus-visible" in css
+
+
+def test_theme_colors_meet_contrast_minimums():
+    night = "#07040d"
+    # Body text 4.5:1; large text and UI parts (borders, focus ring) 3:1.
+    for text in ("#ede9fe", "#a78bfa", "#f97316", "#fdba74"):
+        assert _contrast(text, night) >= 4.5, text
+    assert _contrast("#7c3aed", night) >= 3  # borders
+    assert _contrast("#f97316", night) >= 3  # focus ring
+    assert _contrast(night, "#f97316") >= 4.5  # dark text on orange buttons
+
+
+def test_portal_cauldron_and_glow_styles_exist():
+    css = STYLES.read_text(encoding="utf-8")
+    portal = re.search(r"\.portal\s*\{(.*?)\n\}", css, flags=re.S).group(1)
+    assert "conic-gradient" in portal and "border-radius: 50%" in portal
+    assert ".cauldron::before" in css and "@keyframes bubble-rise" in css
+    for state in (".glow-btn {", ".glow-btn:hover", ".glow-btn:focus-visible"):
+        assert state in css
+    html = INDEX.read_text(encoding="utf-8")
+    assert 'class="portal ' in html and 'class="cauldron ' in html
+
+
+def test_primary_buttons_glow_and_touch_targets_are_44px():
+    html = INDEX.read_text(encoding="utf-8")
+    for tag in re.findall(r"<button\b[^>]*>", html, flags=re.S):
+        if "bg-pumpkin" in tag and "hover:bg-pumpkin" not in tag:
+            assert "glow-btn" in tag, tag
+    css = STYLES.read_text(encoding="utf-8")
+    mobile = css.split("@media (max-width: 767px)")[1]
+    assert "min-height: 44px" in mobile and "min-width: 44px" in mobile
+
+
+def test_404_page_uses_the_same_theme():
+    html = (STATIC / "404.html").read_text(encoding="utf-8")
+    assert "/static/css/styles.css" in html
+    assert "#07040d" in html and "glow-btn" in html
+    assert 'aria-hidden="true"' in html and "buried" in html

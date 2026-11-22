@@ -200,13 +200,119 @@ body {
   }
 }
 
+/* ---- Portal, cauldron, glowing buttons (Req 15.1, 15.2, 15.4, 15.6) ---- */
+
+/* Pet portal: an oval upload zone with a conic-gradient swirl for a border.
+   Why two backgrounds: the inner one (padding-box) hides the swirl in the middle,
+   so only the transparent border area shows it. */
+.portal {
+  border: 4px solid transparent;
+  border-radius: 50%;
+  min-height: 9rem;
+  background:
+    linear-gradient(#0d0716, #0d0716) padding-box,
+    conic-gradient(from 0deg, #7c3aed, #f97316, #a78bfa, #7c3aed, #f97316, #7c3aed) border-box;
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.7), 0 0 36px rgba(249, 115, 22, 0.25);
+  animation: portal-pulse 4s ease-in-out infinite alternate;
+}
+.portal:hover {
+  box-shadow: 0 0 24px rgba(167, 139, 250, 0.9), 0 0 44px rgba(249, 115, 22, 0.4);
+}
+@keyframes portal-pulse {
+  from {
+    box-shadow: 0 0 14px rgba(124, 58, 237, 0.6), 0 0 30px rgba(249, 115, 22, 0.2);
+  }
+  to {
+    box-shadow: 0 0 24px rgba(124, 58, 237, 0.9), 0 0 44px rgba(249, 115, 22, 0.35);
+  }
+}
+
+/* Costume cauldron: a pot with a wide rim, round belly and two rising bubbles.
+   The fieldset keeps its content readable; only the border shape changes. */
+.cauldron {
+  position: relative;
+  border: 3px solid #7c3aed;
+  border-top-width: 6px; /* the rim */
+  border-radius: 0.75rem 0.75rem 45% 45% / 0.75rem 0.75rem 12% 12%;
+  padding-bottom: 1.75rem;
+  background: linear-gradient(to top, rgba(124, 58, 237, 0.18), transparent 40%);
+  box-shadow: 0 0 16px rgba(124, 58, 237, 0.45);
+}
+.cauldron::before,
+.cauldron::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.55);
+  pointer-events: none; /* Why: bubbles are decoration and must never block taps */
+  animation: bubble-rise 3.2s ease-in infinite;
+}
+.cauldron::before {
+  right: 18%;
+}
+.cauldron::after {
+  right: 34%;
+  width: 0.5rem;
+  height: 0.5rem;
+  animation-delay: -1.6s;
+}
+@keyframes bubble-rise {
+  from {
+    transform: translateY(0.5rem);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(-1.6rem);
+    opacity: 0;
+  }
+}
+
+/* Primary buttons glow in orange: resting, hover (stronger), and keyboard focus. */
+.glow-btn {
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.55);
+  transition: box-shadow 0.2s ease;
+}
+.glow-btn:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.95);
+}
+.glow-btn:focus-visible {
+  box-shadow: 0 0 22px rgba(249, 115, 22, 1), 0 0 0 4px rgba(237, 233, 254, 0.9);
+}
+.glow-btn:disabled {
+  box-shadow: none; /* a sleeping button should not look awake */
+}
+
+/* Touch targets: on phones and tablets every control is at least 44 x 44 px. */
+@media (max-width: 767px) {
+  button,
+  input:not([type="file"]),
+  #logo,
+  .portal,
+  label[for="costume-input"] {
+    min-height: 44px;
+  }
+  button,
+  #logo {
+    min-width: 44px;
+  }
+}
+
 /* Reduced motion (Req 15.15, 15.18): fog stays as a still background, the rest
    stops or hides. The progress bar width change is kept on purpose, because it
    shows real progress rather than decoration. */
 @media (prefers-reduced-motion: reduce) {
   .fx-fog,
-  .fx-candle {
+  .fx-candle,
+  .portal,
+  .cauldron::before,
+  .cauldron::after {
     animation: none;
+  }
+  .glow-btn {
+    transition: none;
   }
   .fx-flyers {
     display: none;
