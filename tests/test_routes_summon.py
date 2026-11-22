@@ -1,4 +1,5 @@
-﻿import asyncio
+from app.scenes import KEYWORD_SCENES
+import asyncio
 import base64
 
 import pytest
@@ -183,7 +184,7 @@ def test_scene_is_passed_to_maker():
     maker = FakeCostumeMaker()
     client, _ = make_client(maker=maker)
     summon(client, description="pirate hat")
-    assert maker.calls[0][1] == "a ghost ship on a stormy sea"
+    assert maker.calls[0][1] in KEYWORD_SCENES["pirate"]
 
 
 def test_costume_photo_only_is_accepted():

@@ -534,7 +534,8 @@ let detailUrl = null;
 let current = null; // the spell open in the detail view
 
 function formatDate(ms) {
-  return new Date(ms).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  // Why: toLocaleString uses the visitor's own time zone, e.g. "Nov 22, 4:30 PM".
+  return new Date(ms).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
 function showListView() {
@@ -682,6 +683,22 @@ const judgeInput = $("judge-input");
 const judgeMessage = $("judge-message");
 const judgeSubmit = $("judge-submit");
 
+// Swaps the pass box for a small badge while a pass is stored; the box returns without one.
+function showJudgeBadge(remaining) {
+  const badge = $("judge-badge");
+  if (!state.judgePass) {
+    badge.hidden = true;
+    judgeForm.hidden = false;
+    return;
+  }
+  if (typeof remaining === "number") {
+    badge.textContent = `🔑 Judge mode: ${remaining} ${remaining === 1 ? "spell" : "spells"} tonight`;
+  } else if (!badge.textContent) {
+    badge.textContent = "🔑 Judge mode";
+  }
+  badge.hidden = false;
+  judgeForm.hidden = true;
+}
 async function refreshUsage() {
   const usage = await getUsage(state.judgePass);
   const line = $("usage-line");
@@ -691,6 +708,7 @@ async function refreshUsage() {
   }
   line.textContent = spellsText(usage.remaining);
   line.hidden = false;
+  showJudgeBadge(usage.remaining);
 }
 
 // Checks a pass and shows the right message. Returns true when it was accepted.
@@ -710,6 +728,7 @@ async function submitJudgePass(pass) {
     state.judgePass = pass;
     judgeInput.value = "";
     judgeMessage.textContent = judgeText.welcome(result.remaining);
+    showJudgeBadge(result.remaining);
     refreshUsage();
     return true;
   }
@@ -741,6 +760,7 @@ async function handlePassParameter() {
 
 // Read the gallery once at page load so a broken store is reported early (Req 9.16).
 refreshGallery();
+showJudgeBadge();
 refreshUsage();
 handlePassParameter();
 

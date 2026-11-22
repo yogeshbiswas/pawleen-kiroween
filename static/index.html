@@ -60,7 +60,7 @@
 
   <!-- Privacy_Banner: hidden until banner.js decides this is a first visit. -->
   <aside id="privacy-banner" aria-labelledby="privacy-banner-title" hidden
-    class="mx-3 mt-3 rounded-xl border border-pumpkin/60 bg-black/50 p-3 text-sm">
+    class="privacy-card mx-auto mt-3 w-[calc(100%-1.5rem)] max-w-[calc(48rem-1.5rem)] rounded-xl border border-pumpkin/60 bg-black/50 p-3 text-sm">
     <p id="privacy-banner-title" class="font-bold text-pumpkin">🕯️ A few spooky promises</p>
     <ul class="mt-2 list-disc pl-5 space-y-1 break-words">
       <li>Your photos are processed by OpenAI to make your costume.</li>
@@ -153,6 +153,8 @@
 
       <!-- Judge pass: a separate form so Enter here never starts a summon. -->
       <p id="usage-line" class="mt-6 text-center text-sm text-witch-light" aria-live="polite" hidden></p>
+      <!-- Judge badge: replaces the pass box once a pass is accepted. -->
+      <p id="judge-badge" class="mt-3 rounded-full border border-pumpkin/60 px-3 py-1 text-center text-sm text-pumpkin" role="status" hidden></p>
       <form id="judge-form" class="mt-3 rounded-xl border border-witch/40 p-3" novalidate>
         <label for="judge-input" class="block text-pumpkin">🗝️ Have a judge pass?</label>
         <div class="mt-2 flex flex-col gap-2 min-[400px]:flex-row">

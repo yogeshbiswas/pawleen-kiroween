@@ -1,20 +1,39 @@
 """Spooky scene selection for the costume image.
 
-Five costumes have a fixed scene. Any other costume gets a random generic
+Five costumes have three scenes each. Any other costume gets a random generic
 scene that differs from the visitor's previous one (Requirements 5.5-5.7).
 """
 from __future__ import annotations
 
 import random
 
-KEYWORD_SCENES: dict[str, str] = {
-    "wizard": "a magical library with floating candles",
-    "vampire": "a dark castle under a red moon",
-    "pumpkin": "a foggy pumpkin patch at night",
-    "pirate": "a ghost ship on a stormy sea",
-    "ghost": "a misty graveyard with fireflies",
+KEYWORD_SCENES: dict[str, list[str]] = {
+    "wizard": [
+        "a magical library with floating candles",
+        "a starry wizard tower at midnight",
+        "a bubbling potion room",
+    ],
+    "vampire": [
+        "a dark castle under a red moon",
+        "a candlelit gothic hall",
+        "misty cemetery gates",
+    ],
+    "pumpkin": [
+        "a foggy pumpkin patch at night",
+        "a harvest barn with jack-o'-lanterns",
+        "a moonlit cornfield",
+    ],
+    "pirate": [
+        "a ghost ship on a stormy sea",
+        "a haunted pirate cove",
+        "a shipwreck under a green moon",
+    ],
+    "ghost": [
+        "a misty graveyard with fireflies",
+        "an abandoned haunted hallway",
+        "a foggy old church yard",
+    ],
 }
-
 GENERIC_SCENES: list[str] = [
     "an abandoned haunted mansion at midnight",
     "a creepy forest with twisted trees and glowing eyes",
@@ -44,10 +63,11 @@ def choose_scene(
 ) -> str:
     """Return the scene for a costume. Keywords match case-insensitively."""
     text = costume_text.lower()
-    for keyword, scene in KEYWORD_SCENES.items():
-        if keyword in text:
-            return scene
     rng = rng or random.Random()
+    for keyword, options in KEYWORD_SCENES.items():
+        if keyword in text:
+            # Skip the previous scene so the visitor sees a new one each time.
+            return rng.choice([s for s in options if s != previous])
     # Exclude the previous scene so the visitor never sees it twice in a row.
     options = [s for s in GENERIC_SCENES if s != previous]
     return rng.choice(options)

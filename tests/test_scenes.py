@@ -6,20 +6,48 @@ from app import scenes
 from app.scenes import GENERIC_SCENES, KEYWORD_SCENES, choose_scene
 
 
-@pytest.mark.parametrize("keyword,scene", list(KEYWORD_SCENES.items()))
-def test_keyword_maps_to_scene_in_any_case(keyword, scene):
-    assert choose_scene(keyword) == scene
-    assert choose_scene(keyword.upper()) == scene
-    assert choose_scene(f"A Tiny {keyword.title()} outfit") == scene
+@pytest.mark.parametrize("keyword,options", list(KEYWORD_SCENES.items()))
+def test_keyword_maps_to_one_of_its_scenes_in_any_case(keyword, options):
+    assert choose_scene(keyword) in options
+    assert choose_scene(keyword.upper()) in options
+    assert choose_scene(f"A Tiny {keyword.title()} outfit") in options
+
+
+@pytest.mark.parametrize("keyword,options", list(KEYWORD_SCENES.items()))
+def test_keyword_scene_differs_from_previous(keyword, options):
+    rng = random.Random(3)
+    for previous in options:
+        for _ in range(30):
+            assert choose_scene(keyword, previous, rng) != previous
 
 
 def test_keyword_scenes_match_requirements():
     assert KEYWORD_SCENES == {
-        "wizard": "a magical library with floating candles",
-        "vampire": "a dark castle under a red moon",
-        "pumpkin": "a foggy pumpkin patch at night",
-        "pirate": "a ghost ship on a stormy sea",
-        "ghost": "a misty graveyard with fireflies",
+        "wizard": [
+            "a magical library with floating candles",
+            "a starry wizard tower at midnight",
+            "a bubbling potion room",
+        ],
+        "vampire": [
+            "a dark castle under a red moon",
+            "a candlelit gothic hall",
+            "misty cemetery gates",
+        ],
+        "pumpkin": [
+            "a foggy pumpkin patch at night",
+            "a harvest barn with jack-o'-lanterns",
+            "a moonlit cornfield",
+        ],
+        "pirate": [
+            "a ghost ship on a stormy sea",
+            "a haunted pirate cove",
+            "a shipwreck under a green moon",
+        ],
+        "ghost": [
+            "a misty graveyard with fireflies",
+            "an abandoned haunted hallway",
+            "a foggy old church yard",
+        ],
     }
 
 
