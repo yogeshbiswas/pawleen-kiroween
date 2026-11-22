@@ -228,7 +228,7 @@ Conventions for every task:
   - By hand: set `USE_FAKE_AGENTS=1`, `GLOBAL_DAILY_CAP=50`, and fake values for the other required variables, then run `python -m app.main`. Open `http://localhost:8000/health` and an unknown path to see the 404 page. From a terminal, send a `curl -N -F pet_photo=@some.jpg -F description="wizard hat" http://localhost:8000/api/summon` and check that `step`, `heartbeat` (if slow), and `result` events appear.
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Frontend skeleton working end to end with fake agents
+- [x] 8. Frontend skeleton working end to end with fake agents
   - [x] 8.1 Set up the Tailwind build with pytailwindcss
     - Create `tailwind.config.js` (content paths, `night`, `witch`, `pumpkin` colors, `display` and `body` font families), `tailwind/input.css` (`@import "tailwindcss"; @config; @source` lines) as in the design, and run `tailwindcss -i tailwind/input.css -o static/css/tailwind.css --minify`. Commit the generated file. Note the exact `pytailwindcss` / Tailwind version used in `docs/openai-findings.md`'s sibling file `docs/build-notes.md` (and the `TAILWINDCSS_VERSION` value).
     - Add `tests/test_static_assets.py` (first part): `static/css/tailwind.css` exists and is not empty; `tailwind.config.js` and `tailwind/input.css` exist; `requirements.txt` does not list `pytailwindcss` while `requirements-dev.txt` does.
@@ -271,7 +271,7 @@ Conventions for every task:
     - Rebuild `tailwind.css`. Manual check with `USE_FAKE_AGENTS=1`: a full run shows all three steps then moves to the result screen. `pytest` passes.
     - _Requirements: 3.1, 3.3, 3.6, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10, 7.11, 7.12, 7.13, 7.14, 4.10, 4.11, 12.4, 12.6, 13.11_
 
-  - [ ] 8.7 Build the Result_View with Before/After, download, share, and next actions
+  - [x] 8.7 Build the Result_View with Before/After, download, share, and next actions
     - Show the costumed image in a portrait container with `object-fit: contain` (every pixel visible), the Before_After_View with the original pet preview next to it, a download button (object URL, full resolution, PNG; show an error message and keep the button on failure), a share button shown only when `navigator.canShare({ files })` is true (fall back to download when sharing is unavailable or fails), "Try another costume" (clears costume fields, keeps the pet), "New pet" (clears everything), and the "🕯️ N spells left tonight" line (singular for 1, "0 spells left tonight" for 0).
     - Add the fog-clearing reveal as a CSS animation in `styles.css`.
     - Rebuild `tailwind.css`. Manual check with the fake agents. `pytest` passes.

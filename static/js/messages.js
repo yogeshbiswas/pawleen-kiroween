@@ -29,6 +29,11 @@ export const MESSAGES = {
   ],
   // Req 7.13: the stream went silent for 30 s, or the network dropped
   connectionLost: "The spirits lost the connection 🕸️ Please go back to the booth and try again. Your choices are kept.",
+  // Req 8.5: saving the image failed
+  downloadFailed: "The spirits dropped the portrait 🕸️ Please tap the download button to try again.",
+  // Notices shown if the server did not send its own text
+  notVerified: "We could not double-check this spell 🔮 The portrait is yours, but it may look a bit odd.",
+  wonky: "This spell came out a little wonky 🌀 You can try another costume for a better result.",
   // Fallback when the server sends an error without text
   genericError: "The spirits tripped over a cobweb 🕸️ Please go back to the booth and try again.",
 };

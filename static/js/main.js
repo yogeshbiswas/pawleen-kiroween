@@ -318,8 +318,8 @@ async function startSummon() {
       setProgress(100);
       $("progress-message").textContent = MESSAGES.ready;
       $("progress-sub").hidden = true;
-      // Task 8.7 renders the result; here we only switch to its screen.
       readyTimer = setTimeout(() => {
+        renderResult(data);
         showScreen("result");
         setBusy(false);
       }, READY_PAUSE_MS);
@@ -336,6 +336,106 @@ async function startSummon() {
   finished = true;
   showFailure(MESSAGES.connectionLost, false);
 }
+
+// ---- Result_View (task 8.7) ----
+
+let resultBlob = null; // full-resolution image as returned by the server
+let resultUrl = null; // object URLs must be revoked, or the memory stays used
+let beforeUrl = null;
+
+// Turns the base64 text from the server into a Blob (no re-encoding, so full resolution).
+function base64ToBlob(b64, mime) {
+  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  return new Blob([bytes], { type: mime });
+}
+
+// Req 8.11: "2 spells left tonight", "1 spell left tonight", "0 spells left tonight".
+export function spellsText(n) {
+  return `🕯️ ${n} ${n === 1 ? "spell" : "spells"} left tonight`;
+}
+
+function resultFile() {
+  const ext = resultBlob.type === "image/jpeg" ? "jpg" : "png";
+  return new File([resultBlob], `pawleen-spooky-pet.${ext}`, { type: resultBlob.type });
+}
+
+export function renderResult(data) {
+  if (resultUrl) URL.revokeObjectURL(resultUrl);
+  if (beforeUrl) URL.revokeObjectURL(beforeUrl);
+  resultBlob = base64ToBlob(data.image_b64, data.mime || "image/png");
+  resultUrl = URL.createObjectURL(resultBlob);
+  $("result-image").src = resultUrl;
+
+  // The original pet photo goes next to the result (Req 8.2).
+  beforeUrl = state.petPrepared ? URL.createObjectURL(state.petPrepared.blob) : null;
+  if (beforeUrl) $("result-before").src = beforeUrl;
+
+  const notice = $("result-notice");
+  const noticeText = data.message || MESSAGES[data.notice === "not_verified" ? "notVerified" : "wonky"];
+  notice.hidden = !data.notice;
+  if (data.notice) notice.textContent = noticeText;
+
+  $("result-spells").textContent = spellsText(data.remaining);
+  $("result-error").hidden = true;
+
+  // Why check canShare with a real file: some browsers have share() but not for files.
+  const share = $("result-share");
+  share.hidden = !(navigator.canShare && navigator.canShare({ files: [resultFile()] }));
+
+  // Restart the fog animation each time a new result is shown.
+  const box = $("result-image").parentElement;
+  box.classList.remove("fog-reveal");
+  void box.offsetWidth; // forces a reflow so the animation can start again
+  box.classList.add("fog-reveal");
+}
+
+// Saves through a temporary link. On failure the button stays, so the visitor can retry (Req 8.5).
+function downloadResult() {
+  try {
+    const link = document.createElement("a");
+    link.href = resultUrl;
+    link.download = resultFile().name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    $("result-error").hidden = true;
+  } catch (err) {
+    show($("result-error"), MESSAGES.downloadFailed);
+  }
+}
+
+async function shareResult() {
+  try {
+    await navigator.share({ files: [resultFile()], title: "My spooky pet" });
+  } catch (err) {
+    // The visitor closing the share sheet is not a failure; anything else falls back to download (Req 8.7).
+    if (err && err.name === "AbortError") return;
+    downloadResult();
+  }
+}
+
+$("result-download").addEventListener("click", downloadResult);
+$("result-share").addEventListener("click", shareResult);
+
+// Req 8.9: keep the pet, clear the costume photo and the description.
+$("result-another").addEventListener("click", () => {
+  $("costume-remove").click();
+  description.value = "";
+  trimmed.hidden = true;
+  syncDescription();
+  showScreen("booth");
+});
+
+// Req 8.10: clear everything.
+$("result-new-pet").addEventListener("click", () => {
+  $("costume-remove").click();
+  $("pet-remove").click();
+  description.value = "";
+  trimmed.hidden = true;
+  syncDescription();
+  state.result = null;
+  showScreen("booth");
+});
 
 syncDescription();
 showScreen("booth");

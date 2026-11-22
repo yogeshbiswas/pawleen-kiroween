@@ -61,6 +61,34 @@ body {
   }
 }
 
+/* Result screen: fog clears to reveal the costumed pet (Req 15.13).
+   The fog is a pseudo-element on top of the image that fades and blurs away. */
+.fog-reveal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* Why: the fog must never block taps on the page */
+  background: radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.85), rgba(7, 4, 13, 0.95));
+  backdrop-filter: blur(12px);
+  animation: fog-clear 1.6s ease-out forwards;
+}
+@keyframes fog-clear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No animation: the image is simply visible at once. */
+  .fog-reveal::after {
+    animation: none;
+    display: none;
+  }
+}
+
 /* A visible focus ring for keyboard users, in the orange accent. */
 :focus-visible {
   outline: 2px solid #f97316;
