@@ -167,3 +167,51 @@ def test_page_loads_from_root_route(monkeypatch):
     assert r.status_code == 200
     assert FOOTER_TEXT in r.text
     assert client.get("/static/js/main.js").status_code == 200
+
+
+# ---- Part 4: booth form (task 8.5) ----
+INDEX = STATIC / "index.html"
+
+
+def test_booth_form_texts_and_chips_are_present():
+    html = INDEX.read_text(encoding="utf-8")
+    for text in (
+        "Works best with one pet per photo 🐾",
+        "Using a costume photo? Add details here ✨",
+        "Summon Costume",
+        "0 / 200",
+        "Wizard with purple hat",
+        "Vampire cape",
+        "Pumpkin costume",
+    ):
+        assert text in html
+
+
+def test_file_inputs_have_no_forced_camera():
+    # Why: without "capture", phones offer both the camera and the photo library.
+    html = INDEX.read_text(encoding="utf-8")
+    tags = re.findall(r"<input[^>]*type=\"file\"[^>]*>", html)
+    assert len(tags) == 2
+    for tag in tags:
+        assert "capture" not in tag
+
+
+def test_description_input_has_maxlength_200_and_example_placeholder():
+    html = INDEX.read_text(encoding="utf-8")
+    tag = re.search(r'<input id="description"[^>]*>', html, flags=re.S).group(0)
+    assert 'maxlength="200"' in tag
+    assert 'placeholder="Example:' in tag
+
+
+def test_summon_button_starts_disabled():
+    html = INDEX.read_text(encoding="utf-8")
+    tag = re.search(r'<button[^>]*id="summon-button"[^>]*>', html, flags=re.S).group(0)
+    assert "disabled" in tag
+
+
+def test_main_js_wires_prepare_image_and_button_rule():
+    js = (STATIC / "js" / "main.js").read_text(encoding="utf-8")
+    assert "prepareImage" in js
+    assert "state.petPrepared" in js and "state.costumePrepared" in js
+    assert 'description.trim() !== ""' in js
+    assert "MESSAGES.darkroom" in js and "MESSAGES.smallPhoto" in js

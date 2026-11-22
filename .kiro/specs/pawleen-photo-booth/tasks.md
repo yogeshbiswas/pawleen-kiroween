@@ -257,7 +257,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 1.1, 1.4, 1.5, 1.6, 1.9, 2.9, 2.10_
 
-  - [ ] 8.5 Build the booth form (pet portal, costume cauldron, chips, button rules)
+  - [x] 8.5 Build the booth form (pet portal, costume cauldron, chips, button rules)
     - In `index.html` and `main.js` add: the Pet_Photo upload (file input without a forced camera so mobile offers camera or library, preview, remove button, darkroom message, small-photo note, the "Works best with one pet per photo 🐾" tip), the Costume_Photo upload (preview, remove), the Costume_Description input with an example placeholder, the hint "Using a costume photo? Add details here ✨", at least three Example_Chips ("Wizard with purple hat", "Vampire cape", "Pumpkin costume"), a live "N / 200" counter, `maxlength` 200 with a trim message on paste, and the "Summon Costume" button.
     - Wire `prepareImage`: a rejected file keeps the previous selection and preview and shows the spooky message; a new valid pet photo replaces the old one and dismisses the message; remove clears the preview; the pet photo stays selected after a generation.
     - Enable the button only when `petPrepared && (costumePrepared || description.trim() !== '')`, and disable it while a request runs.

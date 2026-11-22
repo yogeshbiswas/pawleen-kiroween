@@ -32,6 +32,74 @@
     <section id="screen-booth" data-screen="booth" aria-labelledby="booth-title">
       <h1 id="booth-title" class="text-3xl text-pumpkin">Pawleen's Photo Booth</h1>
       <p class="mt-2">Upload your pet and pick a costume. The booth does the rest.</p>
+
+      <form id="booth-form" class="mt-4 flex flex-col gap-6" novalidate>
+
+        <!-- Pet portal -->
+        <fieldset class="rounded-xl border border-witch/40 p-3">
+          <legend class="px-2 text-xl text-pumpkin font-display">🔮 Pet portal</legend>
+          <p class="text-sm text-witch-light">Works best with one pet per photo 🐾</p>
+          <!-- No "capture" attribute on purpose: phones then offer camera or photo library. -->
+          <label for="pet-input" id="pet-label"
+            class="mt-2 flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg border border-dashed border-witch px-3 py-2 text-center hover:bg-witch/20 focus-within:outline focus-within:outline-2 focus-within:outline-pumpkin">
+            📸 Choose your pet's photo
+            <input id="pet-input" name="pet_photo" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+          </label>
+          <p id="pet-darkroom" class="mt-2 text-sm" role="status" hidden></p>
+          <p id="pet-error" class="mt-2 text-sm text-orange-300" role="alert" hidden></p>
+          <p id="pet-small" class="mt-2 text-sm text-witch-light" role="status" hidden></p>
+          <div id="pet-preview-box" class="mt-2 flex flex-col items-start gap-2" hidden>
+            <img id="pet-preview" alt="Preview of your pet photo" class="max-h-64 max-w-full rounded-lg object-contain">
+            <button type="button" id="pet-remove"
+              class="min-h-11 px-3 rounded-lg border border-witch text-witch-light hover:bg-witch/20">
+              🗑️ Remove pet photo
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- Costume cauldron -->
+        <fieldset class="rounded-xl border border-witch/40 p-3">
+          <legend class="px-2 text-xl text-pumpkin font-display">🧪 Costume cauldron</legend>
+
+          <label for="costume-input" id="costume-label"
+            class="flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg border border-dashed border-witch px-3 py-2 text-center hover:bg-witch/20 focus-within:outline focus-within:outline-2 focus-within:outline-pumpkin">
+            🎭 Choose a costume photo (optional)
+            <input id="costume-input" name="costume_photo" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+          </label>
+          <p id="costume-darkroom" class="mt-2 text-sm" role="status" hidden></p>
+          <p id="costume-error" class="mt-2 text-sm text-orange-300" role="alert" hidden></p>
+          <div id="costume-preview-box" class="mt-2 flex flex-col items-start gap-2" hidden>
+            <img id="costume-preview" alt="Preview of your costume photo" class="max-h-64 max-w-full rounded-lg object-contain">
+            <button type="button" id="costume-remove"
+              class="min-h-11 px-3 rounded-lg border border-witch text-witch-light hover:bg-witch/20">
+              🗑️ Remove costume photo
+            </button>
+          </div>
+
+          <label for="description" class="mt-4 block">Costume description</label>
+          <p class="text-sm text-witch-light">Using a costume photo? Add details here ✨</p>
+          <input id="description" name="description" type="text" maxlength="200" autocomplete="off"
+            placeholder="Example: a wizard with a purple hat and a golden wand"
+            class="mt-1 w-full min-h-11 rounded-lg border border-witch bg-black/40 px-3 py-2">
+          <div class="mt-1 flex flex-wrap items-start justify-between gap-2">
+            <p id="description-trimmed" class="text-sm text-orange-300" role="status" hidden></p>
+            <p id="description-count" class="ml-auto text-sm text-witch-light" aria-live="polite">0 / 200</p>
+          </div>
+
+          <!-- Example chips replace the description when tapped. -->
+          <div id="chips" class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Costume ideas">
+            <button type="button" class="chip min-h-11 px-3 rounded-full border border-pumpkin text-pumpkin hover:bg-pumpkin/20" data-text="Wizard with purple hat">Wizard with purple hat</button>
+            <button type="button" class="chip min-h-11 px-3 rounded-full border border-pumpkin text-pumpkin hover:bg-pumpkin/20" data-text="Vampire cape">Vampire cape</button>
+            <button type="button" class="chip min-h-11 px-3 rounded-full border border-pumpkin text-pumpkin hover:bg-pumpkin/20" data-text="Pumpkin costume">Pumpkin costume</button>
+          </div>
+        </fieldset>
+
+        <button type="submit" id="summon-button" disabled
+          class="min-h-12 w-full rounded-xl bg-pumpkin px-4 py-3 text-lg font-bold text-night disabled:cursor-not-allowed disabled:opacity-40">
+          🎃 Summon Costume
+        </button>
+        <p id="summon-hint" class="-mt-4 text-sm text-witch-light">Add a pet photo and a costume photo or description to wake the button.</p>
+      </form>
     </section>
 
     <section id="screen-progress" data-screen="progress" aria-labelledby="progress-title" hidden>
