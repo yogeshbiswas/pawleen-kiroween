@@ -78,14 +78,18 @@ async def vision_json(
     return parsed
 
 
-async def edit_image(client, settings, *, images, prompt, timeout, mime="image/jpeg"):
-    """Edit one or two images (pet first, optional costume photo); return PNG bytes."""
+async def edit_image(client, settings, *, images, prompt, timeout):
+    """Edit one or two images; return PNG bytes.
+
+    `images` is a list of (bytes, mime) pairs: the pet first, then the optional
+    costume photo. Each image keeps its own MIME type.
+    """
     quality = settings.image_quality
     if quality not in ALLOWED_QUALITY:
         quality = "medium"  # config already validates; this is a safety net
     result = await client.images.edit(
         model=settings.image_model,
-        image=[(f"image{i}", data, mime) for i, data in enumerate(images, start=1)],
+        image=[(f"image{i}", data, mime) for i, (data, mime) in enumerate(images, start=1)],
         prompt=prompt,
         size=PORTRAIT_SIZE,
         quality=quality,

@@ -61,7 +61,7 @@ async def test_edit_image_params(quality):
     images = FakeImages(image_result())
     client = SimpleNamespace(images=images)
     out = await openai_client.edit_image(
-        client, settings(quality), images=[b"pet"], prompt="p", timeout=7
+        client, settings(quality), images=[(b"pet", "image/png")], prompt="p", timeout=7
     )
     assert out == PNG
     kw = images.kwargs
@@ -72,13 +72,16 @@ async def test_edit_image_params(quality):
     assert len(kw["image"]) == 1
 
 
-async def test_edit_image_sends_both_images():
+async def test_edit_image_sends_both_images_with_own_mime():
     images = FakeImages(image_result())
     client = SimpleNamespace(images=images)
     await openai_client.edit_image(
-        client, settings(), images=[b"pet", b"costume"], prompt="p", timeout=1
+        client, settings(), images=[(b"pet", "image/png"), (b"costume", "image/jpeg")],
+        prompt="p", timeout=1,
     )
-    assert [part[1] for part in images.kwargs["image"]] == [b"pet", b"costume"]
+    assert [part[1:] for part in images.kwargs["image"]] == [
+        (b"pet", "image/png"), (b"costume", "image/jpeg")
+    ]
 
 
 @pytest.mark.parametrize(
@@ -89,7 +92,7 @@ async def test_edit_image_sends_both_images():
 async def test_missing_image_raises_mapped_error(result):
     client = SimpleNamespace(images=FakeImages(result))
     with pytest.raises(PawleenError) as info:
-        await openai_client.edit_image(client, settings(), images=[b"pet"], prompt="p", timeout=1)
+        await openai_client.edit_image(client, settings(), images=[(b"pet", "image/png")], prompt="p", timeout=1)
     assert info.value.code == "maker_failed"
 
 
@@ -170,12 +173,12 @@ async def test_no_image_data_in_logs(caplog):
     caplog.set_level(logging.DEBUG)
     b64 = base64.b64encode(PNG).decode()
     client = SimpleNamespace(images=FakeImages(image_result()))
-    await openai_client.edit_image(client, settings(), images=[b"pet"], prompt="p", timeout=1)
+    await openai_client.edit_image(client, settings(), images=[(b"pet", "image/png")], prompt="p", timeout=1)
     await _vision_with(SimpleNamespace(output_parsed=Schema(ok=True), output=[]))
     with pytest.raises(PawleenError):
         await openai_client.edit_image(
             SimpleNamespace(images=FakeImages(SimpleNamespace(data=[]))),
-            settings(), images=[b"pet"], prompt="p", timeout=1,
+            settings(), images=[(b"pet", "image/png")], prompt="p", timeout=1,
         )
     assert b64 not in caplog.text
     assert base64.b64encode(b"i").decode() not in caplog.text

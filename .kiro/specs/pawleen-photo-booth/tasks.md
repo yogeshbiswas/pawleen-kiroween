@@ -325,7 +325,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.15, 4.16_
 
-  - [ ] 12.3 Implement the real Costume Maker (`app/agents/costume_maker.py`) with tests
+  - [x] 12.3 Implement the real Costume Maker (`app/agents/costume_maker.py`) with tests
     - Add `build_prompt(costume_text, scene, failure_reasons)` containing the preserve-appearance, portrait-orientation, full pet and full costume centered with at least 5 % margin, scene, and dress-only-the-animals instructions, plus "Fix these problems: ..." when reasons are given, and a costume-reference line when a costume photo exists. Implement `make(req, scene, failure_reasons)` through `edit_image` with `quality` from settings on every call.
     - Write `tests/test_costume_maker.py`: every required instruction is in the prompt, reasons are included on regeneration, the quality value reaches the fake unchanged for `low`, `medium`, `high` including on the regeneration call, a costume photo is passed as a second image, a failed call or no image raises.
     - `pytest` passes.

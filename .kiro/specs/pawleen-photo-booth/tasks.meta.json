@@ -509,6 +509,18 @@
         "chatSessionId": "sess_dddf5c7e-98e1-4a69-8769-e22f34e8b3a5",
         "timestamp": 1795383721475
       }
+    ],
+    "12.3 Implement the real Costume Maker (`app/agents/costume_maker.py`) with tests": [
+      {
+        "executionId": "88fa9c53-18fa-4e33-91a8-adad4a9bd519",
+        "chatSessionId": "sess_82b24dc5-2461-468f-bafb-d33d97d876b9",
+        "timestamp": 1795384005504
+      },
+      {
+        "executionId": "88fa9c53-18fa-4e33-91a8-adad4a9bd519",
+        "chatSessionId": "sess_82b24dc5-2461-468f-bafb-d33d97d876b9",
+        "timestamp": 1795384071673
+      }
     ]
   }
 }
