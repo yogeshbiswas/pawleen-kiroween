@@ -2,7 +2,7 @@
 // Why load in JS: a missing file must show nothing (no broken-image icon).
 const EXAMPLES = [
   { file: "example-1.png", caption: "Wizard pup, spell cast" },
-  { file: "example-2.png", caption: "Vampire kitty at midnight" },
+  { file: "example-2.png", caption: "Gothic bird of the night" },
   { file: "example-3.png", caption: "Pumpkin pet on patrol" },
 ];
 
