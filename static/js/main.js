@@ -3,6 +3,7 @@
 import { prepareImage, PrepError } from "/static/js/image-prep.js";
 import { MESSAGES, judgeText, limitText } from "/static/js/messages.js";
 import { summon, getUsage, checkJudge } from "/static/js/api.js";
+import { initSound, playSubmit, playStepComplete, playResult } from "/static/js/sound.js";
 import { costumeNameFor, saveSpell, listSpells, deleteSpell, clearAll } from "/static/js/gallery.js";
 
 export const SCREENS = ["booth", "progress", "result", "gallery", "error"];
@@ -269,6 +270,8 @@ function resetProgress() {
 function handleStep(data) {
   const index = STEP_ORDER.indexOf(data.step);
   if (index < 0) return;
+  // A later step starting means the one before it finished.
+  if (index > 0) playStepComplete();
   setActiveIndex(index);
   setProgress(STEP_PERCENT[data.step]);
   // Req 7.8: a second round says so, with the attempt number.
@@ -317,6 +320,9 @@ function backToBooth() {
 
 $("error-back").addEventListener("click", backToBooth);
 
+// Sound_Toggle lives in the top bar, so it is reachable on every screen.
+initSound($("sound-toggle"));
+
 async function startSummon() {
   // Build and send at once, so the request leaves well within 500 ms of the click (Req 3.6).
   const form = new FormData();
@@ -327,6 +333,7 @@ async function startSummon() {
   form.append("description", state.description.trim());
 
   setBusy(true);
+  playSubmit();
   resetProgress();
   showScreen("progress");
   summonAbort = new AbortController();
@@ -339,6 +346,7 @@ async function startSummon() {
     else if (type === "result") {
       finished = true;
       stopRotation();
+      playResult();
       state.result = data;
       saveToGallery(data); // right away, well inside the 2 seconds (Req 9.1)
       setActiveIndex(STEP_ORDER.length); // all three rows complete

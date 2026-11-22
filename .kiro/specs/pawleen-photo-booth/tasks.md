@@ -283,7 +283,7 @@ Conventions for every task:
   - Mobile-width check: open browser devtools device mode and test at 320, 360, and 390 px wide. Check that there is no horizontal scrollbar, buttons are easy to tap (at least 44 px), and every screen is readable.
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Gallery, judge pass, privacy banner, and sound
+- [x] 10. Gallery, judge pass, privacy banner, and sound
   - [x] 10.1 Implement the Haunted_Gallery (`static/js/gallery.js`) and its view
     - Create `gallery.js` with IndexedDB database `pawleen`, store `spells` (`id`, `blob`, `costumeName`, `savedAt`, index on `savedAt`), and `saveSpell`, `listSpells` (newest first), `deleteSpell`, `clearAll`, plus the exported `costumeNameFor(description, gatekeeperName)` rule (description, else Costume_Name, else "Mystery costume").
     - In `main.js` and `index.html`: save the result image within 2 seconds of receiving it (decode base64 to a Blob); the gallery view with thumbnails (newest first, name and date), the hint "🦇 Your gallery lives in this browser. Download your favourites to keep them forever!", a detail view (original size scaled to fit, download, share, delete), the shared "🪦 Banish this spell forever? This can't be undone." dialog with "Banish" and "Keep it" (focus trapped and returned), "Clear my whole gallery", and the empty-state message. Handle a full or unavailable store (message plus download still available) and a failed read (message, nothing deleted). Send nothing from the gallery to the backend.
@@ -302,7 +302,7 @@ Conventions for every task:
     - Rebuild `tailwind.css`. Manual check: banner shows, dismiss, reload. `pytest` passes.
     - _Requirements: 16.5, 16.6, 16.7_
 
-  - [ ] 10.4 Add the Sound_Toggle and sound effects (`static/js/sound.js`)
+  - [x] 10.4 Add the Sound_Toggle and sound effects (`static/js/sound.js`)
     - Create `sound.js` with `enabled` off by default (saved in `localStorage.pawleenSound`) and short WebAudio tones for submit, step complete, and result. Add the top-bar toggle with `aria-pressed`, reachable on every screen. No audio files.
     - Rebuild `tailwind.css`. Manual check: silent by default, toggle on and hear tones, reload keeps the setting. `pytest` passes.
     - _Requirements: 15.17, 15.9_
