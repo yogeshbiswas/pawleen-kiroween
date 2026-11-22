@@ -533,6 +533,18 @@
         "chatSessionId": "sess_d2ec1803-3b79-4c75-bddb-3057a498250f",
         "timestamp": 1795384312824
       }
+    ],
+    "12.7 Wire the real agents into the app": [
+      {
+        "executionId": "41aa4dbc-2d45-45aa-b465-eb5e65f0d0ba",
+        "chatSessionId": "sess_1061f7f3-d0ee-4097-8bc9-c16fced87d9f",
+        "timestamp": 1795384491468
+      },
+      {
+        "executionId": "41aa4dbc-2d45-45aa-b465-eb5e65f0d0ba",
+        "chatSessionId": "sess_1061f7f3-d0ee-4097-8bc9-c16fced87d9f",
+        "timestamp": 1795384555213
+      }
     ]
   }
 }

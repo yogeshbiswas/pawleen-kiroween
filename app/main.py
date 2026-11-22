@@ -58,13 +58,32 @@ def _build_fake_agents(env: Mapping[str, str]):
     return Agents(gatekeeper=DevGatekeeper(), maker=maker, checker=DevQualityChecker())
 
 
+def _build_real_agents(settings: Settings):
+    from app import openai_client
+    from app.agents.costume_maker import CostumeMaker
+    from app.agents.gatekeeper import Gatekeeper
+    from app.agents.quality_checker import QualityChecker
+    from app.pipeline import Agents
+
+    # One shared client for all three agents.
+    client = openai_client.make_client(settings)
+    return Agents(
+        gatekeeper=Gatekeeper(client, settings),
+        maker=CostumeMaker(client, settings),
+        checker=QualityChecker(client, settings),
+    )
+
+
 def create_app(settings: Settings | None = None, agents=None) -> FastAPI:
     """Build the app. With `settings=None`, settings are read from os.environ.
 
     Config problems never stop the app: `/health` and static files keep working
     and only the pipeline is disabled.
     """
-    if settings is None:
+    # Real agents are built only from environment settings. Tests that pass
+    # `settings` or `agents` themselves never reach OpenAI.
+    from_env = settings is None
+    if from_env:
         settings, problems = load_settings(os.environ)
         if problems:
             logger.error("Configuration problems: %s", ", ".join(problems))
@@ -74,6 +93,8 @@ def create_app(settings: Settings | None = None, agents=None) -> FastAPI:
     if agents is None and fake_agents_requested(os.environ):
         agents = _build_fake_agents(os.environ)
         logger.warning("USE_FAKE_AGENTS is on: fake agents are used, no OpenAI calls are made")
+    elif agents is None and from_env and not problems:
+        agents = _build_real_agents(settings)
 
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
     app.state.settings = settings

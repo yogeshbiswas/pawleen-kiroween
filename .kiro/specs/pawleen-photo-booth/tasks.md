@@ -347,7 +347,7 @@ Conventions for every task:
     - File `tests/test_prop_12_prompts.py`. `pytest` passes.
     - **Validates: Requirements 5.2, 5.3, 5.4, 5.5, 6.8**
 
-  - [ ] 12.7 Wire the real agents into the app
+  - [x] 12.7 Wire the real agents into the app
     - In `create_app` and `app/main.py` build the real agents from `openai_client` when `USE_FAKE_AGENTS` is not set and the config has no problems. Keep passing fake agents through the `agents` argument for tests.
     - Write `tests/test_wiring.py`: with a valid config and no fake flag the real agent classes are used (the OpenAI client is a mocked factory); with `USE_FAKE_AGENTS=1` the fakes are used; with a config problem the pipeline stays disabled and summon returns `config_error`.
     - `pytest` passes.
