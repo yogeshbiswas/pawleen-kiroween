@@ -100,6 +100,14 @@ body {
   overflow: hidden;
 }
 
+/* Content sits above the effects (z-index 1). Without position, z-index does
+   nothing, and the fixed effects were painted over the page (washed-out result image). */
+header,
+main,
+footer {
+  position: relative;
+  z-index: 2;
+}
 /* Fog: two oversized radial-gradient layers drifting in opposite directions. */
 .fx-fog {
   inset: -20%;

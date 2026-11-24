@@ -8,6 +8,7 @@
 //  4. Delete again, choose "Banish": only that one disappears.
 //  5. "Clear my whole gallery" + "Banish": the empty message appears.
 //  6. Console: costumeNameFor("", "  ") must return "Mystery costume".
+//  7. iPhone Safari Private Browsing: make a spell, open the gallery, the image appears.
 
 const DB_NAME = "pawleen";
 const STORE = "spells";
@@ -70,8 +71,16 @@ async function withStore(mode, work) {
 }
 
 // Saves one spell and returns its id.
-export function saveSpell({ blob, costumeName }) {
-  const record = { blob, costumeName: costumeNameFor("", costumeName), savedAt: Date.now() };
+export async function saveSpell({ blob, costumeName }) {
+  // Why: Safari Private Browsing cannot store Blob objects in IndexedDB, but it can
+  // store ArrayBuffers. Read the bytes before opening the transaction, because a
+  // transaction closes by itself if we await something else inside it.
+  const record = {
+    bytes: await blob.arrayBuffer(),
+    mime: blob.type || "image/png",
+    costumeName: costumeNameFor("", costumeName),
+    savedAt: Date.now(),
+  };
   return withStore("readwrite", (store, setResult) => {
     const request = store.add(record);
     request.onsuccess = () => setResult(request.result);
@@ -84,6 +93,13 @@ export async function listSpells() {
     const request = store.getAll();
     request.onsuccess = () => setResult(request.result);
   });
+  // Why: main.js expects record.blob. New records keep raw bytes, so rebuild the Blob here.
+  // Old records already have a "blob" field and are used as they are.
+  for (const record of all) {
+    if (!record.blob && record.bytes) {
+      record.blob = new Blob([record.bytes], { type: record.mime });
+    }
+  }
   return all.sort((a, b) => b.savedAt - a.savedAt || b.id - a.id);
 }
 

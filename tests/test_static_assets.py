@@ -543,3 +543,13 @@ def test_layout_classes_are_used_in_index_and_built_into_tailwind_css():
             f"{name} not used in index.html"
         )
         assert _css_selector(name) in css, f"{name} missing: rebuild tailwind.css"
+
+# ---- Part 14: content stays above the effects (phone bug) ----
+def test_content_wrappers_are_stacked_above_effects_layers():
+    css = STYLES.read_text(encoding="utf-8")
+    fx_z = int(re.search(r"\.fx-layer\s*\{[^}]*z-index:\s*(\d+)", css).group(1))
+    # Why: z-index only works on positioned elements, so position is checked too.
+    rule = re.search(r"header,\s*main,\s*footer\s*\{(.*?)\}", css, flags=re.S).group(1)
+    assert "position: relative" in rule
+    content_z = int(re.search(r"z-index:\s*(\d+)", rule).group(1))
+    assert content_z > fx_z
