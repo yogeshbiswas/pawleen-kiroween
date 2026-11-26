@@ -15,6 +15,7 @@ export const state = {
   costumePrepared: null, // result of prepareImage for the costume photo
   description: "",
   busy: false, // true while a summon request runs
+  judgeEnabled: false, // from /api/usage; the pass box stays hidden until it says true
 };
 
 // Shows one screen and hides the others. Unknown names are ignored.
@@ -368,11 +369,17 @@ async function startSummon() {
   };
 
   const outcome = await summon(form, state.judgePass, onEvent, myAbort.signal);
+  // Why here: the stream has ended, so the server already committed or released the spell.
+  // Re-read the count on every outcome so the booth line and judge badge are never stale.
+  refreshUsage();
   if (outcome === "aborted" || finished) return;
   // Stream ended or died without a result or error: treat as a lost connection (Req 7.13).
   finished = true;
   showFailure(MESSAGES.connectionLost, false);
 }
+
+// Manual check:
+//  - Make a spell, go back to the booth: the count and the judge badge go down by one without reloading.
 
 // ---- Result_View (task 8.7) ----
 
@@ -688,7 +695,8 @@ function showJudgeBadge(remaining) {
   const badge = $("judge-badge");
   if (!state.judgePass) {
     badge.hidden = true;
-    judgeForm.hidden = false;
+    // Why: show the box only when the server says judge mode is on (default: hidden).
+    judgeForm.hidden = !state.judgeEnabled;
     return;
   }
   if (typeof remaining === "number") {
@@ -706,6 +714,7 @@ async function refreshUsage() {
     line.hidden = true; // Why hide: no guess is better than a wrong number
     return;
   }
+  state.judgeEnabled = usage.judge_enabled === true;
   line.textContent = spellsText(usage.remaining);
   line.hidden = false;
   showJudgeBadge(usage.remaining);

@@ -137,3 +137,15 @@ def test_two_browsers_have_separate_judge_counts():
     ra = a.get("/api/usage", headers={"X-Judge-Pass": PASS}).json()
     rb = b.get("/api/usage", headers={"X-Judge-Pass": PASS}).json()
     assert ra["remaining"] == 19 and rb["remaining"] == 20
+
+
+def test_usage_judge_enabled_is_false_when_no_pass_is_set():
+    # Why: an empty pass means judge mode is off, so the page hides the pass box.
+    client, _ = make_client(judge_pass="")
+    assert client.get("/api/usage").json()["judge_enabled"] is False
+
+
+def test_usage_judge_enabled_is_true_when_a_pass_is_set():
+    # Pass built from pieces so no secret-looking literal sits in the test.
+    client, _ = make_client(judge_pass="judge-" + "test-" + "pass-0123456789")
+    assert client.get("/api/usage").json()["judge_enabled"] is True

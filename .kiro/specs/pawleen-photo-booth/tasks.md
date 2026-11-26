@@ -392,7 +392,7 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 14.9, 14.10_
 
-- [ ] 15. Checkpoint - Polish and mobile-width check
+- [x] 15. Checkpoint - Polish and mobile-width check
   - Run `pytest` and make sure it passes.
   - In the browser at 320, 360, and 390 px (devtools device mode) and again at 768, 1280, and 1920 px: no horizontal scrollbar, tap targets are comfortable, the fog, bats, and candle do not block clicks, headings use the spooky font, the logo and favicon show, the result image is fully visible. Test once more with reduced motion enabled and once with the keyboard only.
   - Ensure all tests pass, ask the user if questions arise.

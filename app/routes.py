@@ -96,6 +96,8 @@ async def usage(request: Request, browser_id: str = Depends(get_browser_id)):
         "remaining": await state.usage.remaining(browser_id, is_judge),
         "limit": settings.judge_daily_limit if is_judge else settings.visitor_daily_limit,
         "is_judge": is_judge,
+        # Why: lets the page hide the judge pass box when judge mode is off.
+        "judge_enabled": bool((settings.judge_pass or "").strip()),
         "reset_in_seconds": await state.usage.seconds_until_reset(),
     }
 

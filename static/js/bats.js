@@ -88,7 +88,10 @@ function startSegment(bat) {
   bat.swoop = 0;
   bat.pause = 0;
 
-  if (Math.random() < bat.eventChance) {
+  // Why: no random event on the final segment (to the off-screen exit). A dash or swoop
+  // there makes the bat shoot out of view in a blink, and it looks like it vanished.
+  const isFinalSegment = bat.index === bat.points.length - 2;
+  if (!isFinalSegment && Math.random() < bat.eventChance) {
     const kind = Math.floor(random(0, 3));
     if (kind === 0) {
       // Quick swoop: dips down or up on the way, and gets there faster.

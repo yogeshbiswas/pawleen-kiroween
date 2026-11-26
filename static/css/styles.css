@@ -155,6 +155,7 @@ footer {
   color: #120a1f;
   opacity: 0.85;
   filter: drop-shadow(0 0 3px rgba(167, 139, 250, 0.7));
+  will-change: transform; /* keeps each bat on its own drawing layer */
   /* Why: bats.js moves each bat every frame (transform) and flips it (scale);
      hidden until then so nothing flashes in the corner. */
   top: 0;
@@ -346,7 +347,7 @@ footer {
     display: block;
     position: fixed;
     top: 6rem;
-    bottom: 1rem;
+    max-height: calc(100vh - 7rem); /* only as tall as its content, so no invisible box covers the corner */
     width: 14rem;
     overflow-y: auto;
     z-index: 2; /* above the effects layers (z-index 1) so text stays readable */
