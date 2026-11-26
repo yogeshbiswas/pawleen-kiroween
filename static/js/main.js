@@ -4,7 +4,7 @@ import { prepareImage, PrepError } from "/static/js/image-prep.js";
 import { MESSAGES, judgeText, limitText } from "/static/js/messages.js";
 import { summon, getUsage, checkJudge } from "/static/js/api.js";
 import { initSound, playSubmit, playStepComplete, playResult } from "/static/js/sound.js";
-import { costumeNameFor, saveSpell, listSpells, deleteSpell, clearAll } from "/static/js/gallery.js";
+import { costumeNameFor, displayName, saveSpell, listSpells, deleteSpell, clearAll } from "/static/js/gallery.js";
 
 export const SCREENS = ["booth", "progress", "result", "gallery", "error"];
 
@@ -589,12 +589,12 @@ function renderThumb(spell) {
   img.className = "aspect-[2/3] w-full rounded-lg object-cover";
   const name = document.createElement("span");
   name.className = "break-words text-sm text-pumpkin";
-  name.textContent = spell.costumeName;
+  name.textContent = displayName(spell.costumeName);
   const date = document.createElement("span");
   date.className = "text-xs text-witch-light";
   date.textContent = formatDate(spell.savedAt);
   button.append(img, name, date);
-  button.setAttribute("aria-label", `${spell.costumeName}, ${formatDate(spell.savedAt)}`);
+  button.setAttribute("aria-label", `${displayName(spell.costumeName)}, ${formatDate(spell.savedAt)}`);
   button.addEventListener("click", () => openDetail(spell));
   li.append(button);
   return li;
@@ -605,7 +605,7 @@ function openDetail(spell) {
   if (detailUrl) URL.revokeObjectURL(detailUrl);
   detailUrl = URL.createObjectURL(spell.blob);
   $("gallery-detail-image").src = detailUrl;
-  $("gallery-detail-name").textContent = spell.costumeName;
+  $("gallery-detail-name").textContent = displayName(spell.costumeName);
   $("gallery-detail-date").textContent = formatDate(spell.savedAt);
   $("gallery-detail-error").hidden = true;
   const file = spellFile(spell);

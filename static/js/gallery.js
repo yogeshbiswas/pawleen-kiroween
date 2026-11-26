@@ -23,6 +23,13 @@ export function costumeNameFor(description, gatekeeperName) {
   return fromGatekeeper || FALLBACK_NAME;
 }
 
+// For display only: capitalize the first letter, keep the rest as typed.
+// Why: "frankenstein" looks unfinished, but the saved name must stay exactly as it was.
+export function displayName(name) {
+  const text = name || "";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 // Opens the database. Rejects when IndexedDB is missing or blocked (e.g. private mode).
 function openDb() {
   return new Promise((resolve, reject) => {
