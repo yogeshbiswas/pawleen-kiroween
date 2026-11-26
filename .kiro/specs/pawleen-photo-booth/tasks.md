@@ -1,4 +1,4 @@
-# Implementation Plan: Pawleen Photo Booth
+﻿# Implementation Plan: Pawleen Photo Booth
 
 ## Overview
 
@@ -410,13 +410,13 @@ Conventions for every task:
     - `pytest` passes.
     - _Requirements: 14.7, 14.10, 13.7, 13.9, 16.5_
 
-  - [ ] 16.3 Add Render deployment files and notes
+  - [x] 16.3 Add Render deployment files and notes
     - Create `render.yaml` (optional blueprint) with one web service: Python runtime, build command `pip install -r requirements.txt`, start command `python -m app.main`, health check path `/health`, a single instance, and all variable names from `.env.example` with `sync: false` for secrets (`OPENAI_API_KEY`, `JUDGE_PASS`) so no secret is stored in the file. Add the same manual steps to the README (create the web service from the repo, set the environment variables in the Environment tab, set the health check path, keep one instance because counters are in memory).
     - Add a test that `render.yaml` parses, has no `sk-` value, uses `/health`, and its start command equals the README start command.
     - `pytest` passes.
     - _Requirements: 14.1, 14.4, 14.7, 14.8, 13.7_
 
-  - [ ] 16.4 Add the post-deploy smoke test script
+  - [x] 16.4 Add the post-deploy smoke test script
     - Create `scripts/smoke_test.py` that takes the base URL and an optional judge pass: it checks `/health`, loads `/` and an unknown path (expects the 404 page), calls `/api/usage`, validates the judge pass through `/api/judge` when one is given (never printing the pass), and optionally runs one real summon through the stream when `--summon sample.jpg` is given, printing only event names and the final status.
     - Add a test of the script's helper functions with `httpx` against the fake-agent app.
     - `pytest` passes.

@@ -564,3 +564,47 @@ def test_readme_has_no_secret_looking_values():
     # Why: the key pattern is built from pieces so this test file passes the secret scanner.
     assert not re.search("s" + "k-[A-Za-z0-9_-]{10,}", readme)
     assert not re.search("JUDGE_" + "PASS" + r"=\S", readme)
+
+
+# ---- Render deployment files (task 16.3) ----
+import yaml
+
+
+def _render_service():
+    data = yaml.safe_load((ROOT / "render.yaml").read_text(encoding="utf-8"))
+    return data["services"][0]
+
+
+def test_render_yaml_parses_and_is_safe():
+    service = _render_service()
+    assert service["healthCheckPath"] == "/health"
+    assert service["numInstances"] == 1
+    assert service["plan"] == "free"
+    env = {item["key"]: item for item in service["envVars"]}
+    # Secrets must be asked for in the dashboard, never stored in the file.
+    for name in ("OPENAI_API_KEY", "JUDGE_PASS"):
+        assert env[name]["sync"] is False
+        assert "value" not in env[name]
+    assert env["PYTHON_VERSION"]["value"] == "3.12.4"
+    assert env["USE_FAKE_AGENTS"]["value"] == "0"
+    assert env["HOST"]["value"] == "0.0.0.0"
+    assert "sk-" not in (ROOT / "render.yaml").read_text(encoding="utf-8")
+
+
+def test_render_start_command_matches_readme():
+    start = _render_service()["startCommand"]
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert f"**Start command:** `{start}`" in readme
+    assert "3.12.4" in readme
+
+
+def test_render_yaml_has_every_env_example_name():
+    # Why: a variable added to .env.example must not be forgotten on Render.
+    # Dev-only names are commented out in .env.example, so only real lines count.
+    names = set()
+    for line in (ROOT / ".env.example").read_text(encoding="utf-8").splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            names.add(line.split("=", 1)[0].strip())
+    names.add("USE_FAKE_AGENTS")  # set to "0" on purpose
+    keys = {item["key"] for item in _render_service()["envVars"]}
+    assert names <= keys

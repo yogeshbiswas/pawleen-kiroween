@@ -1,0 +1,40 @@
+# Render blueprint for Pawleen. No secret lives in this file:
+# `sync: false` makes Render ask for the value in the dashboard.
+services:
+  - type: web
+    name: pawleen
+    runtime: python
+    # Free for now. Switch to Starter by hand before judging (free services sleep when idle).
+    plan: free
+    # One instance only: the daily counters are kept in memory.
+    numInstances: 1
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.main
+    healthCheckPath: /health
+    envVars:
+      # Same Python as my local venv, so Render behaves like my computer.
+      - key: PYTHON_VERSION
+        value: "3.12.4"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: JUDGE_PASS
+        sync: false
+      # Model names are the ones in .env.example (verified, see docs/openai-findings.md).
+      - key: OPENAI_IMAGE_MODEL
+        value: gpt-image-2.6-sunburst
+      - key: OPENAI_VISION_MODEL
+        value: gpt-6-luna
+      - key: OPENAI_IMAGE_QUALITY
+        value: "low"
+      - key: VISITOR_DAILY_LIMIT
+        value: "3"
+      - key: JUDGE_DAILY_LIMIT
+        value: "20"
+      - key: GLOBAL_DAILY_CAP
+        value: "100"
+      # Real agents in production.
+      - key: USE_FAKE_AGENTS
+        value: "0"
+      # Render needs 0.0.0.0 so it can reach the app.
+      - key: HOST
+        value: "0.0.0.0"

@@ -631,6 +631,18 @@
         "chatSessionId": "sess_00b262f5-77dc-4f4d-9c19-eb36daec7546",
         "timestamp": 1795718926762
       }
+    ],
+    "16.4 Add the post-deploy smoke test script": [
+      {
+        "executionId": "7cdbc6fc-1757-48af-89d5-f9d5976c20b5",
+        "chatSessionId": "sess_7cc46655-6ac8-4c8f-b75c-9a6d388e48bf",
+        "timestamp": 1795720165747
+      },
+      {
+        "executionId": "7cdbc6fc-1757-48af-89d5-f9d5976c20b5",
+        "chatSessionId": "sess_7cc46655-6ac8-4c8f-b75c-9a6d388e48bf",
+        "timestamp": 1795720292546
+      }
     ]
   }
 }

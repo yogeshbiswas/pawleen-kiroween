@@ -156,4 +156,18 @@ exit $?
 
 ## Deploy to Render
 
-Coming soon (task 16.3).
+The repo has a `render.yaml` blueprint, so Render can set most things up for you. The steps:
+
+1. Push the repo to GitHub and sign in to [Render](https://render.com).
+2. Click **New** > **Blueprint**, pick the repo, and let Render read `render.yaml`. (Or choose **New** > **Web Service** and fill in the values below by hand.)
+3. When Render asks, enter the two secrets: `OPENAI_API_KEY` and `JUDGE_PASS` (at least 16 random characters). They are never stored in the repo.
+4. Check the settings in the dashboard:
+   - **Runtime:** Python. Set the environment variable `PYTHON_VERSION` to `3.12.4` so Render uses the same Python as my computer.
+   - **Build command:** `pip install -r requirements.txt`
+   - **Start command:** `python -m app.main`
+   - **Health check path:** `/health`
+   - **Instances:** keep exactly one, because the usage counters are in memory.
+   - **Environment tab:** `HOST=0.0.0.0`, `USE_FAKE_AGENTS=0`, `OPENAI_IMAGE_QUALITY=low`, `VISITOR_DAILY_LIMIT=3`, `JUDGE_DAILY_LIMIT=20`, `GLOBAL_DAILY_CAP=100`, plus the two model names from `.env.example`.
+5. Deploy, then open `/health`. It should show `{"status": "ok"}`.
+
+The blueprint uses the `free` plan for now. A free service sleeps when idle and wakes up slowly, and a restart resets the counters. Switch the plan to Starter in the dashboard before judging.
