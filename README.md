@@ -1,18 +1,28 @@
 # Pawleen 🎃🐾
 
-A haunted photo booth that dresses your pet in Halloween costumes.
+A haunted photo booth that lets your pet try on Halloween costumes, virtually.
 
-Live demo: (link coming soon)
-Demo video: (link coming soon)
+- **Live demo:** https://pawleen.onrender.com
+- **Demo video:** (coming soon)
 
 ## Examples
 
-| | | |
-|---|---|---|
 | ![Wizard pup, spell cast](static/examples/example-1.png) | ![Gothic bird of the night](static/examples/example-2.png) | ![Pumpkin pet on patrol](static/examples/example-3.png) |
+|---|---|---|
 | Wizard pup, spell cast | Gothic bird of the night | Pumpkin pet on patrol |
 
 All three were made with Pawleen itself.
+
+## Why I built it
+
+Some pets are calm and happy to dress up. Others are anxious or aggressive, and their owners
+have to lock them away when guests come over. For these pets, trying on costumes in a shop is
+stressful or simply impossible. Yet pet parents love dressing their pets up, especially at
+Halloween, so they end up guessing: "I think this will look good on my dog…"
+
+Pawleen lets pets try costumes on virtually. Upload your pet's photo and a costume (a photo from
+the shop, or just a description), and see the look before you buy, while your pet stays relaxed
+at home. It shows how a costume looks, not whether it fits, so sizes still need checking.
 
 ## What is Pawleen?
 
@@ -168,6 +178,10 @@ The repo has a `render.yaml` blueprint, so Render can set most things up for you
    - **Health check path:** `/health`
    - **Instances:** keep exactly one, because the usage counters are in memory.
    - **Environment tab:** `HOST=0.0.0.0`, `USE_FAKE_AGENTS=0`, `OPENAI_IMAGE_QUALITY=low`, `VISITOR_DAILY_LIMIT=3`, `JUDGE_DAILY_LIMIT=20`, `GLOBAL_DAILY_CAP=100`, plus the two model names from `.env.example`.
-5. Deploy, then open `/health`. It should show `{"status": "ok"}`.
+5. Deploy, then open `/health`. It should show `{"status": "ok"}`. Then run the smoke test:
+
+```powershell
+.\.venv\Scripts\python scripts/smoke_test.py https://pawleen.onrender.com
+```
 
 The blueprint uses the `free` plan for now. A free service sleeps when idle and wakes up slowly, and a restart resets the counters. Switch the plan to Starter in the dashboard before judging.
