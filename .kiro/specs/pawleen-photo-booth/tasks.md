@@ -398,7 +398,7 @@ Conventions for every task:
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 16. Final integration, README, and Render deployment
-  - [ ] 16.1 Add the end-to-end integration test
+  - [x] 16.1 Add the end-to-end integration test
     - Write `tests/test_integration.py` using `create_app` with fake agents and `httpx`: a full run from cookie issue, usage check, summon stream, result event with `remaining`, to usage after the run; a rejected run leaves usage unchanged; a judge run uses the judge count; a restart (new app instance) resets counts.
     - `pytest` passes.
     - _Requirements: 3.1, 6.13, 7.11, 8.11, 10.1, 10.13, 10.15, 10.17, 11.7, 11.8_

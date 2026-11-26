@@ -619,6 +619,18 @@
         "chatSessionId": "sess_08b6fb17-0e1a-487f-bde2-0eae2f20f9c0",
         "timestamp": 1795390065199
       }
+    ],
+    "16.1 Add the end-to-end integration test": [
+      {
+        "executionId": "9f30f4fe-b468-4409-a3d5-68c35b7cdcf2",
+        "chatSessionId": "sess_00b262f5-77dc-4f4d-9c19-eb36daec7546",
+        "timestamp": 1795718623409
+      },
+      {
+        "executionId": "9f30f4fe-b468-4409-a3d5-68c35b7cdcf2",
+        "chatSessionId": "sess_00b262f5-77dc-4f4d-9c19-eb36daec7546",
+        "timestamp": 1795718926762
+      }
     ]
   }
 }
